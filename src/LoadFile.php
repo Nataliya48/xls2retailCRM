@@ -58,30 +58,30 @@ class LoadFile
     public function __construct($file)
     {
         //В этом классе $file = $_FILES['event']['tmp_name'];
+        if (mb_detect_encoding(file_get_contents($file)) !== 'UTF-8') {
+            throw new Exception('Incorrect encoding. Use UTF-8');
+        }
+
         if ($_FILES['file']['error']) {
             throw new Exception('File Download Error #' . $_FILES['file']['error']);
         }
 
-        if (is_uploaded_file($file)) {
-            switch ($this->getExtension($file)) {
-                case 'xls':
-                    $this->openXLS($file);
-                    break;
-                case 'xlsx':
-                    $this->openXLS($file);
-                    break;
-                case 'csv':
-                    $this->openCSV($file);
-                    break;
-                default:
-                    throw new Exception('Incorrect format. Use *.csv or *.xls(x)');
-            }
-        } else {
+        if (!is_uploaded_file($file)) {
             throw new Exception('Access denied');
         }
 
-        if (mb_detect_encoding(file_get_contents($file)) !== 'UTF-8') {
-            throw new Exception('Incorrect encoding. Use UTF-8');
+        switch ($this->getExtension($file)) {
+            case 'xls':
+                $this->openXLS($file);
+                break;
+            case 'xlsx':
+                $this->openXLS($file);
+                break;
+            case 'csv':
+                $this->openCSV($file);
+                break;
+            default:
+                throw new Exception('Incorrect format. Use *.csv or *.xls(x)');
         }
     }
 }
