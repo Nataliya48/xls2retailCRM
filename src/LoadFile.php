@@ -58,10 +58,6 @@ class LoadFile
     public function __construct($file)
     {
         //В этом классе $file = $_FILES['event']['tmp_name'];
-        if (mb_detect_encoding(file_get_contents($file)) !== 'UTF-8') {
-            throw new Exception('Incorrect encoding. Use UTF-8');
-        }
-
         if ($_FILES['file']['error']) {
             throw new Exception('File Download Error #' . $_FILES['file']['error']);
         }
@@ -70,10 +66,14 @@ class LoadFile
             throw new Exception('Access denied');
         }
 
+        if (mb_detect_encoding(file_get_contents($file)) !== 'UTF-8') {
+            throw new Exception('Incorrect encoding. Use UTF-8');
+        }
+
+        move_uploaded_file($file, '/path/to/file.txt'); // указать директорию, куда сохранять файл
+
         switch ($this->getExtension($file)) {
             case 'xls':
-                $this->openXLS($file);
-                break;
             case 'xlsx':
                 $this->openXLS($file);
                 break;
