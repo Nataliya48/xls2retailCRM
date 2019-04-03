@@ -3,11 +3,8 @@
 use \PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use \PhpOffice\PhpSpreadsheet\Writer\Csv;
 
-class Export
+class LoadFile
 {
-    private $file;
-    private $dotenv;
-
     /**
      * Возвращает расширение файла (*.xls *.xlsx *.csv)
      *
@@ -22,7 +19,7 @@ class Export
     {
         if ($this->getExtension() === 'xls' && $this->getExtension() === 'xlsx'){
             // конвертируется в csv
-            $reader = new Xlsx();
+            /*$reader = new Xlsx();
             $spreadsheet = $reader->load($_FILES['event']['tmp_name']);
             $loadedSheetNames = $spreadsheet->getSheetNames();
 
@@ -31,10 +28,31 @@ class Export
             foreach($loadedSheetNames as $sheetIndex => $loadedSheetName) {
                 $writer->setSheetIndex($sheetIndex);
                 $writer->save($loadedSheetName.'.csv');
+            }*/
+            //return $loadedSheetName.'.csv';
+
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($_FILES['event']['tmp_name']);
+            $worksheet = $spreadsheet->getActiveSheet();
+            $row = $worksheet->getRowIterator()->current();
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(true);
+            foreach ($cellIterator as $key => $cell) {
+                $arrNamesCol[] = $cell->getValue(); // записываем названия первых ячеек колонок в отдельный массив
+                $namesCol = implode(';', $arrNamesCol);
             }
-            //return
-        } else {
+
+            foreach ($worksheet->getRowIterator(2) as $row) {   //начиная со второй строки получить инфу по строкам
+                foreach ($row->getCellIterator() as $key => $cell){
+                    $arrValueCell[$key][] = $cell->getValue();
+                    $valueCell = implode(';', $arrValueCell);
+                }
+            }
+            return [$namesCol, $valueCell];
+        } elseif ($this->getExtension() === 'csv') {
             return file_get_contents($_FILES['event']['tmp_name']); // иначе возвращает исходный файл
+        } else {
+            throw new Exception('Incorrect format. Use *.csv or *.xls(x)');
+
         }
     }
 
@@ -42,7 +60,7 @@ class Export
      * Export constructor.
      * @throws Exception ошибки загрузки файла
      */
-    public function __construct()
+    public function __construct($file)
     {
         if ($_FILES['file']['error']) {
             throw new Exception('File Download Error #' . $_FILES['file']['error']);
