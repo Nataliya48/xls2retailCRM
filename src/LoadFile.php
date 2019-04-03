@@ -10,50 +10,45 @@ class LoadFile
      *
      * @return string
      */
-    private function getExtension(): string
+    private function getExtension($file): string
     {
-        return array_pop(explode(".", $_FILES['event']['tmp_name']));
+        return array_pop(explode(".", $file));
     }
 
-    private function convertToCSV()
+    /**
+     * Открывает файл с расширением *.csv
+     *
+     * @param $file загружаемый файл
+     * @return array таблица данных
+     */
+    private function openCSV($file)
     {
-        if ($this->getExtension() === 'xls' && $this->getExtension() === 'xlsx'){
-            // конвертируется в csv
-            /*$reader = new Xlsx();
-            $spreadsheet = $reader->load($_FILES['event']['tmp_name']);
-            $loadedSheetNames = $spreadsheet->getSheetNames();
+        $table = explode(PHP_EOL, trim(file_get_contents($file)));
+        $table = array_map(function ($value) {
+            return explode(',', $value);
+        }, $table);
+        return $table;
+    }
 
-            $writer = new Csv($spreadsheet);
-
-            foreach($loadedSheetNames as $sheetIndex => $loadedSheetName) {
-                $writer->setSheetIndex($sheetIndex);
-                $writer->save($loadedSheetName.'.csv');
-            }*/
-            //return $loadedSheetName.'.csv';
-
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($_FILES['event']['tmp_name']);
-            $worksheet = $spreadsheet->getActiveSheet();
-            $row = $worksheet->getRowIterator()->current();
-            $cellIterator = $row->getCellIterator();
-            $cellIterator->setIterateOnlyExistingCells(true);
-            foreach ($cellIterator as $key => $cell) {
-                $arrNamesCol[] = $cell->getValue(); // записываем названия первых ячеек колонок в отдельный массив
-                $namesCol = implode(';', $arrNamesCol);
+    /**
+     * Открывает файл с расширением *.xls(x)
+     *
+     * @param $file загружаемый файл
+     * @return array таблица данных
+     */
+    private function openXLS($file)
+    {
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $table = [];
+        foreach ($worksheet->getRowIterator() as $row) {
+            $line = [];
+            foreach ($row->getCellIterator() as $cell) {
+                $line[] = $cell->getValue();
             }
-
-            foreach ($worksheet->getRowIterator(2) as $row) {   //начиная со второй строки получить инфу по строкам
-                foreach ($row->getCellIterator() as $key => $cell){
-                    $arrValueCell[$key][] = $cell->getValue();
-                    $valueCell = implode(';', $arrValueCell);
-                }
-            }
-            return [$namesCol, $valueCell];
-        } elseif ($this->getExtension() === 'csv') {
-            return file_get_contents($_FILES['event']['tmp_name']); // иначе возвращает исходный файл
-        } else {
-            throw new Exception('Incorrect format. Use *.csv or *.xls(x)');
-
+            $table[] = $line;
         }
+        return $table;
     }
 
     /**
@@ -62,17 +57,30 @@ class LoadFile
      */
     public function __construct($file)
     {
+        //В этом классе $file = $_FILES['event']['tmp_name'];
         if ($_FILES['file']['error']) {
             throw new Exception('File Download Error #' . $_FILES['file']['error']);
         }
 
-        if (is_uploaded_file($_FILES['event']['tmp_name'])) {
-            $this->convertToCSV();
+        if (is_uploaded_file($file)) {
+            switch ($this->getExtension($file)) {
+                case 'xls':
+                    $this->openXLS($file);
+                    break;
+                case 'xlsx':
+                    $this->openXLS($file);
+                    break;
+                case 'csv':
+                    $this->openCSV($file);
+                    break;
+                default:
+                    throw new Exception('Incorrect format. Use *.csv or *.xls(x)');
+            }
         } else {
             throw new Exception('Access denied');
         }
 
-        if (mb_detect_encoding(file_get_contents($_FILES['event']['tmp_name'])) !== 'UTF-8') {
+        if (mb_detect_encoding(file_get_contents($file)) !== 'UTF-8') {
             throw new Exception('Incorrect encoding. Use UTF-8');
         }
     }
