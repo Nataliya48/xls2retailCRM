@@ -76,11 +76,11 @@ class LoadFile
         switch ($extension) {
             case 'xls':
             case 'xlsx':
-            move_uploaded_file($file, $localFile);
+            move_uploaded_file($file['tmp_name'], $localFile);
             $this->openXLS($localFile);
                 break;
             case 'csv':
-                move_uploaded_file($file, $localFile);
+                move_uploaded_file($file['tmp_name'], $localFile);
                 $this->openCSV($localFile);
                 break;
             default:
