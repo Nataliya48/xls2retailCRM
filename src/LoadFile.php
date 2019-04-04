@@ -10,7 +10,7 @@ class LoadFile
      *
      * @return string
      */
-    public function getExtension($file): string
+    private function getExtension($file): string
     {
         return array_pop(explode('.', $file));
     }
@@ -70,6 +70,7 @@ class LoadFile
         }
 
         $extension = $this->getExtension($file['name']);
+        //проверка, существует ли директория и если нет, то создать ее
         $localFile = realpath(__DIR__ . '/../storage/') . '/file.' . $extension;
 
         switch ($extension) {
