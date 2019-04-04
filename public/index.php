@@ -13,9 +13,10 @@ $apiKey = getenv('API_KEY');
 */
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        var_dump(['POST'=>$_POST]);
-        var_dump(['SERVER'=>$_SERVER]);
-        $orders = new LoadFile($_FILES['file']['name']);
+        //var_dump(['POST'=>$_POST]);
+        //var_dump(['SERVER'=>$_SERVER]);
+        $orders = new LoadFile($_FILES['file']);
+        print_r(pathinfo ($_FILES['file']['name'], PATHINFO_EXTENSION));
         //print_r(['1'=>'1','Extension' => $orders->getExtension($_FILES['file']['name'])]);
     }
 } catch (Exception $e) {

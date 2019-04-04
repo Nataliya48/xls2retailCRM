@@ -58,27 +58,30 @@ class LoadFile
      */
     public function __construct($file)
     {
-        if ($_FILES['file']['error']) {
-            throw new Exception('File Download Error #' . $_FILES['file']['error']);
+        if ($file['error']) {
+            throw new Exception('File Download Error #' . $file['error']);
         }
 
-        if (!is_uploaded_file($file)) {
+        if (!is_uploaded_file($file['tmp_name'])) {
             throw new Exception('Access denied');
         }
 
-        if (mb_detect_encoding(file_get_contents($file)) !== 'UTF-8') {
+        if (mb_detect_encoding(file_get_contents($file['tmp_name'])) !== 'UTF-8') {
             throw new Exception('Incorrect encoding. Use UTF-8');
         }
 
-        move_uploaded_file($file, __DIR__ . '/file.csv'); // указать директорию, куда сохранять файл
+        $extension = $this->getExtension($file['name']);
+        $localFile = realpath(__DIR__ . '/../storage/') . '/file.' . $extension;
 
-        switch ($this->getExtension($file)) {
+        switch ($extension) {
             case 'xls':
             case 'xlsx':
-                $this->openXLS($file);
+            move_uploaded_file($file, $localFile);
+            $this->openXLS($localFile);
                 break;
             case 'csv':
-                $this->openCSV($file);
+                move_uploaded_file($file, $localFile);
+                $this->openCSV($localFile);
                 break;
             default:
                 throw new Exception('Incorrect format. Use *.csv or *.xls(x)');
