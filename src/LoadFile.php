@@ -12,8 +12,7 @@ class LoadFile
      */
     public function getExtension($file): string
     {
-        print_r(array_pop(explode(".", $file)));
-        return array_pop(explode(".", $file));
+        return array_pop(explode('.', $file));
     }
 
     /**
@@ -72,6 +71,7 @@ class LoadFile
 
         $extension = $this->getExtension($file['name']);
         $localFile = realpath(__DIR__ . '/../storage/') . '/file.' . $extension;
+        //результат выполнения realpath
 
         switch ($extension) {
             case 'xls':

@@ -10,6 +10,10 @@
         <input type="submit" value="Отправить"></p>
 </form>
 
-
+<?php
+if (isset($errorMsg)):
+    echo $errorMsg;
+endif;
+?>
 
 </body>
