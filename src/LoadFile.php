@@ -10,8 +10,9 @@ class LoadFile
      *
      * @return string
      */
-    private function getExtension($file): string
+    public function getExtension($file): string
     {
+        print_r(array_pop(explode(".", $file)));
         return array_pop(explode(".", $file));
     }
 
@@ -57,7 +58,6 @@ class LoadFile
      */
     public function __construct($file)
     {
-        //В этом классе $file = $_FILES['event']['tmp_name'];
         if ($_FILES['file']['error']) {
             throw new Exception('File Download Error #' . $_FILES['file']['error']);
         }
@@ -70,7 +70,7 @@ class LoadFile
             throw new Exception('Incorrect encoding. Use UTF-8');
         }
 
-        move_uploaded_file($file, '/path/to/file.txt'); // указать директорию, куда сохранять файл
+        move_uploaded_file($file, __DIR__ . '/file.csv'); // указать директорию, куда сохранять файл
 
         switch ($this->getExtension($file)) {
             case 'xls':
