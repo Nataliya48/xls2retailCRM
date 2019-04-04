@@ -71,7 +71,6 @@ class LoadFile
 
         $extension = $this->getExtension($file['name']);
         $localFile = realpath(__DIR__ . '/../storage/') . '/file.' . $extension;
-        //результат выполнения realpath
 
         switch ($extension) {
             case 'xls':
