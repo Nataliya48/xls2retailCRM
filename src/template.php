@@ -20,11 +20,13 @@ endif;
 ?>
 
 <?php if (!empty($fields)): ?>
-<p><select size="1" name="recipe">
     <?php foreach ($fields as $field): ?>
-        <p><?= $field ?><option value="<?= $field ?>"><?= $field ?></option><p>
+        <p><?= $field ?></p>
+        <p><select size="1" name="field">
+            <option value="<?= $field ?>"><?= $field ?></option>
+            </select></p>
     <?php endforeach; ?>
-</select></p>
+
 <?php endif; ?>
 
 </body>
