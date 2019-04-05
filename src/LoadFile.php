@@ -6,6 +6,13 @@ use \PhpOffice\PhpSpreadsheet\Writer\Csv;
 class LoadFile
 {
     /**
+     * Файл с формы $_FILES['file']
+     *
+     * @var bool|string
+     */
+    private $tmpFile;
+
+    /**
      * Расширение загружаемого файла
      *
      * @var bool|string
@@ -79,19 +86,20 @@ class LoadFile
      */
     public function __construct($file)
     {
-        if ($file['error']) {
-            throw new Exception('File Download Error #' . $file['error']);
+        $this->tmpFile = $file;
+        if ($this->tmpFile['error']) {
+            throw new Exception('File Download Error #' . $this->tmpFile['error']);
         }
 
-        if (!is_uploaded_file($file['tmp_name'])) {
+        if (!is_uploaded_file($this->tmpFile['tmp_name'])) {
             throw new Exception('Access denied');
         }
 
-        if (mb_detect_encoding(file_get_contents($file['tmp_name'])) !== 'UTF-8') {
+        if (mb_detect_encoding(file_get_contents($this->tmpFile['tmp_name'])) !== 'UTF-8') {
             throw new Exception('Incorrect encoding. Use UTF-8');
         }
 
-        $this->extension = $this->getExtension($file['name']);
+        $this->extension = $this->getExtension($this->tmpFile['name']);
         $this->path = realpath(__DIR__ . '/../storage/');
 
         if (!file_exists($this->path)) {
@@ -101,16 +109,16 @@ class LoadFile
         $this->localFile = $this->path . '/file.' . $this->extension;
     }
 
-    public function getFileContents($file)
+    public function getFileContents()
     {
         switch ($this->extension) {
             case 'xls':
             case 'xlsx':
-                move_uploaded_file($file['tmp_name'], $this->localFile);
+                move_uploaded_file($this->tmpFile['tmp_name'], $this->localFile);
                 return $this->xlsToArr($this->localFile);
                 break;
             case 'csv':
-                move_uploaded_file($file['tmp_name'], $this->localFile);
+                move_uploaded_file($this->tmpFile['tmp_name'], $this->localFile);
                 return $this->csvToArr($this->localFile);
                 break;
             default:
