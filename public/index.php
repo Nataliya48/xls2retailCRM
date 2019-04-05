@@ -2,7 +2,6 @@
 require_once '../vendor/autoload.php';
 require '../src/LoadFile.php';
 require '../src/SendRequest.php';
-require '../src/MatchSetting.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
