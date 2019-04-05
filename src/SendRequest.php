@@ -30,7 +30,7 @@ Class SendRequest
      * @param $apiKey ключ API
      * @throws Exception
      */
-    public function __construct($urlCrm, $apiKey)
+    public function __construct($urlCrm, $apiKey, $table)
     {
         try {
             $this->response = $this->connectionToCPM($urlCrm, $apiKey)->request->ordersList();

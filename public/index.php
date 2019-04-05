@@ -13,9 +13,10 @@ $apiKey = getenv('API_KEY');
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $orders = new LoadFile($_FILES['file']);
-        var_dump($orders);
-        $query = new SendRequest($urlCrm, $apiKey, $orders);
+        $table = new LoadFile($_FILES['file']);
+        $data = $table->getFileContents($_FILES['file']['name']);
+        //var_dump($data);
+        $query = new SendRequest($urlCrm, $apiKey, $data);
     }
 } catch (Exception $e) {
     $errorMsg = 'Выброшено исключение: ' . $e->getMessage() . "\n";

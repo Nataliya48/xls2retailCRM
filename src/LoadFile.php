@@ -6,6 +6,27 @@ use \PhpOffice\PhpSpreadsheet\Writer\Csv;
 class LoadFile
 {
     /**
+     * Расширение загружаемого файла
+     *
+     * @var bool|string
+     */
+    private $extension;
+
+    /**
+     * Директория, где хранится файл локально
+     *
+     * @var bool|string
+     */
+    private $path;
+
+    /**
+     * Полный путь к загруженному локальному файлу
+     *
+     * @var string
+     */
+    private $localFile;
+
+    /**
      * Возвращает расширение файла (*.xls *.xlsx *.csv)
      *
      * @return string
@@ -22,7 +43,7 @@ class LoadFile
      * @param $file загружаемый файл
      * @return array таблица данных
      */
-    private function openCSV($file)
+    private function csvToArr($file)
     {
         $table = explode(PHP_EOL, trim(file_get_contents($file)));
         $table = array_map(function ($value) {
@@ -37,7 +58,7 @@ class LoadFile
      * @param $file загружаемый файл
      * @return array таблица данных
      */
-    private function openXLS($file)
+    private function xlsToArr($file)
     {
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
         $worksheet = $spreadsheet->getActiveSheet();
@@ -70,24 +91,27 @@ class LoadFile
             throw new Exception('Incorrect encoding. Use UTF-8');
         }
 
-        $extension = $this->getExtension($file['name']);
-        $path = realpath(__DIR__ . '/../storage/');
+        $this->extension = $this->getExtension($file['name']);
+        $this->path = realpath(__DIR__ . '/../storage/');
 
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
+        if (!file_exists($this->path)) {
+            mkdir($this->path, 0777, true);
         }
 
-        $localFile = $path . '/file.' . $extension;
+        $this->localFile = $this->path . '/file.' . $this->extension;
+    }
 
-        switch ($extension) {
+    public function getFileContents($file)
+    {
+        switch ($this->extension) {
             case 'xls':
             case 'xlsx':
-                move_uploaded_file($file['tmp_name'], $localFile);
-                $this->openXLS($localFile);
+                move_uploaded_file($file['tmp_name'], $this->localFile);
+                return $this->xlsToArr($this->localFile);
                 break;
             case 'csv':
-                move_uploaded_file($file['tmp_name'], $localFile);
-                $this->openCSV($localFile);
+                move_uploaded_file($file['tmp_name'], $this->localFile);
+                return $this->csvToArr($this->localFile);
                 break;
             default:
                 throw new Exception('Incorrect format. Use *.csv or *.xls(x)');
