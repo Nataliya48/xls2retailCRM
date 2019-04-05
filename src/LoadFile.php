@@ -71,8 +71,13 @@ class LoadFile
         }
 
         $extension = $this->getExtension($file['name']);
-        //проверка, существует ли директория и если нет, то создать ее
-        $localFile = realpath(__DIR__ . '/../storage/') . '/file.' . $extension;
+        $path = realpath(__DIR__ . '/../storage/');
+
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        $localFile = $path . '/file.' . $extension;
 
         switch ($extension) {
             case 'xls':

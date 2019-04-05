@@ -1,12 +1,12 @@
 <?php
 require_once '../vendor/autoload.php';
 require '../src/LoadFile.php';
-//require '../src/SendRequest.php';
+require '../src/SendRequest.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-$dotenv = Dotenv\Dotenv::create(__DIR__);
+$dotenv = Dotenv\Dotenv::create(realpath(__DIR__ . '/../'));
 $dotenv->load();
 $urlCrm = getenv('URL_CRM');
 $apiKey = getenv('API_KEY');
