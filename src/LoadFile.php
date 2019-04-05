@@ -131,4 +131,14 @@ class LoadFile
                 throw new Exception('Incorrect format. Use *.csv or *.xls(x)');
         }
     }
+
+    /**
+     * Возвращает названия полей из файла
+     *
+     * @return mixed
+     */
+    public function getNamesFields()
+    {
+        return $this->getFileContents()[0];
+    }
 }

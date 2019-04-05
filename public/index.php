@@ -16,9 +16,7 @@ try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $file = new LoadFile($_FILES['file']);
         $table = $file->getFileContents();
-        $settings = new MatchSetting($table);
-        $fields = $settings->getNamesFields();
-        //$query = new SendRequest($urlCrm, $apiKey, $table);
+        $fields = $file->getNamesFields();
     }
 } catch (Exception $e) {
     $errorMsg = 'Выброшено исключение: ' . $e->getMessage() . "\n";

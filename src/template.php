@@ -1,5 +1,6 @@
 <html>
 <head>
+    <title>Export2CRM</title>
     <link rel="stylesheet" href="style.css" type="text/css"/>
 </head>
 <body>
@@ -13,6 +14,8 @@
         <input type="submit" value="Отправить"></p>
 </form>
 
+<!-- <form method="post">
+
 <?php
 if (isset($errorMsg)):
     echo $errorMsg;
@@ -23,10 +26,12 @@ endif;
     <?php foreach ($fields as $field): ?>
         <p><?= $field ?></p>
         <p><select size="1" name="field">
-            <option value="<?= $field ?>"><?= $field ?></option>
+                <option value="<?= $field ?>"><?= $field ?></option>
             </select></p>
     <?php endforeach; ?>
 
 <?php endif; ?>
+
+</form> -->
 
 </body>
