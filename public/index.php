@@ -14,7 +14,7 @@ $apiKey = getenv('API_KEY');
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $table = new LoadFile($_FILES['file']);
-        $data = $table->getFileContents($_FILES['file']['name']);
+        $data = $table->getFileContents();
         //var_dump($data);
         $query = new SendRequest($urlCrm, $apiKey, $data);
     }

@@ -14,7 +14,7 @@ Class SendRequest
      * @param $apiKey ключ API
      * @return \RetailCrm\ApiClient
      */
-    private function connectionToCPM($urlCrm, $apiKey)
+    private function connectionToCrm($urlCrm, $apiKey)
     {
         $client = new \RetailCrm\ApiClient(
             $urlCrm,
@@ -33,7 +33,7 @@ Class SendRequest
     public function __construct($urlCrm, $apiKey, $table)
     {
         try {
-            $this->response = $this->connectionToCPM($urlCrm, $apiKey)->request->ordersList();
+            $this->response = $this->connectionToCrm($urlCrm, $apiKey)->request->ordersList();
         } catch (\RetailCrm\Exception\CurlException $e) {
             throw new Exception('Connection error: ' . $e->getMessage());
         }

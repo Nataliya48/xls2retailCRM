@@ -50,7 +50,7 @@ class LoadFile
      * @param $file загружаемый файл
      * @return array таблица данных
      */
-    private function csvToArr($file)
+    private function csvToArr($file): array
     {
         $table = explode(PHP_EOL, trim(file_get_contents($file)));
         $table = array_map(function ($value) {
@@ -65,7 +65,7 @@ class LoadFile
      * @param $file загружаемый файл
      * @return array таблица данных
      */
-    private function xlsToArr($file)
+    private function xlsToArr($file): array
     {
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
         $worksheet = $spreadsheet->getActiveSheet();
@@ -109,7 +109,13 @@ class LoadFile
         $this->localFile = $this->path . '/file.' . $this->extension;
     }
 
-    public function getFileContents()
+    /**
+     * Возвращает информацию, считанную с файла
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getFileContents(): array
     {
         switch ($this->extension) {
             case 'xls':
