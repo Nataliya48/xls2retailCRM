@@ -12,7 +12,8 @@ class LoadFile
      */
     private function getExtension($file): string
     {
-        return array_pop(explode('.', $file));
+        $file = explode('.', $file);
+        return array_pop($file);
     }
 
     /**
@@ -76,8 +77,8 @@ class LoadFile
         switch ($extension) {
             case 'xls':
             case 'xlsx':
-            move_uploaded_file($file['tmp_name'], $localFile);
-            $this->openXLS($localFile);
+                move_uploaded_file($file['tmp_name'], $localFile);
+                $this->openXLS($localFile);
                 break;
             case 'csv':
                 move_uploaded_file($file['tmp_name'], $localFile);
