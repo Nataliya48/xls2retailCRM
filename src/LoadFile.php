@@ -81,6 +81,23 @@ class LoadFile
     }
 
     /**
+     * Подключение к CRM
+     *
+     * @param $urlCrm адрес CRM
+     * @param $apiKey ключ API
+     * @return \RetailCrm\ApiClient
+     */
+    private function connectionToCrm($urlCrm, $apiKey)
+    {
+        $client = new \RetailCrm\ApiClient(
+            $urlCrm,
+            $apiKey,
+            \RetailCrm\ApiClient::V5
+        );
+        return $client;
+    }
+
+    /**
      * Export constructor.
      * @throws Exception ошибки загрузки файла
      */

@@ -8,6 +8,16 @@ Class SendRequest
     private $response;
 
     /**
+     * @var array
+     */
+    private $table;
+
+    /**
+     * @var array
+     */
+    private $symbolicCode;
+
+    /**
      * Подключение к CRM
      *
      * @param $urlCrm адрес CRM
@@ -30,8 +40,12 @@ Class SendRequest
      * @param $apiKey ключ API
      * @throws Exception
      */
-    public function __construct($urlCrm, $apiKey, $table)
+    public function __construct($urlCrm, $apiKey, $table, $mapping)
     {
+        $this->symbolicCode = $table[0];
+        unset($table[0]);
+        $this->table = $table;
+
         try {
             $this->response = $this->connectionToCrm($urlCrm, $apiKey)->request->ordersList();
         } catch (\RetailCrm\Exception\CurlException $e) {
@@ -44,7 +58,7 @@ Class SendRequest
     // каждой колонке соответствует свой символьный код поля срм
     // каждая ячейка загружается в то поле, которое выставлено в соответствии
 
-    private function getMatching()
+    private function getMapp()
     {
         //будет хранить массив [ключ]=>[значение]
         //[Название поля таблицы]=>[Код поля CRM]
