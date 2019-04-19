@@ -12,17 +12,10 @@ Class ConnectCrm
      * @var
      */
     private $apiKey;
-    /**
-     * символьный код сайта
-     * @var
-     */
-    private $site;
 
     /**
      * Подключение к CRM
      *
-     * @param $url адрес CRM
-     * @param $apiKey ключ API
      * @return \RetailCrm\ApiClient
      */
     private function connectionToCrm()
@@ -35,14 +28,29 @@ Class ConnectCrm
         return $client;
     }
 
+    /**
+     * ConnectCrm constructor.
+     * @param $url адрес CRM
+     * @param $apiKey ключ API
+     */
     public function __construct($url, $apiKey)
     {
         $this->url = $url;
         $this->apiKey = $apiKey;
     }
 
-    public function getSite()
+    /**
+     * Получение списка сайтов
+     *
+     * @return array
+     */
+    public function getSiteName()
     {
-        return $this->connectionToCrm()->request->credentials();
+        $siteNames = $this->connectionToCrm()->request->sitesList();
+        $arrNames = [];
+        foreach ($siteNames['sites'] as $name) {
+            $arrNames[$name['code']] = $name['name'];
+        }
+        return $arrNames;
     }
 }

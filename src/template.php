@@ -29,31 +29,23 @@
             <option value="orders">Заказы</option>
             <option value="customers">Клиенты</option>
         </select></p>
+
     <p>Выберите магазин: </p>
+    <?php if (!empty($sites)): ?>
     <p><select size="1" name="site[]">
             <option disabled>Выберите магазин</option>
+            <?php foreach ($sites as $code => $name): ?>
+                <option value="<?= $code ?>"><?= $name ?></option>
+            <?php endforeach; ?>
         </select></p>
-    <input type="submit" value="Отправить"></p>
+    <p><input type="submit" value="Выбрать"></p>
 </form>
-
-<!-- <form method="post">
+<?php endif; ?>
 
 <?php
 if (isset($errorMsg)):
     echo $errorMsg;
 endif;
 ?>
-
-<?php if (!empty($fields)): ?>
-    <?php foreach ($fields as $field): ?>
-        <p><?= $field ?></p>
-        <p><select size="1" name="field">
-                <option value="<?= $field ?>"><?= $field ?></option>
-            </select></p>
-    <?php endforeach; ?>
-
-<?php endif; ?>
-
-</form> -->
 
 </body>
