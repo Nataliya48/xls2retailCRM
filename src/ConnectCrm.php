@@ -58,6 +58,6 @@ class ConnectCrm
 
     public function listFields()
     {
-        return json_decode(file_get_contents(__DIR__ . '/retailcrm.json'));
+        return json_decode(file_get_contents(__DIR__ . '/retailcrm.json'), true);
     }
 }

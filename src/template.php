@@ -41,34 +41,36 @@
     <p><input type="submit" value="Выбрать"></p>
 </form>
 <?php endif; ?>
+<pre>
+<?php //print_r(get_defined_vars()) ?>
+</pre>
+
+
+
+
+
 
 <table border="1" width="100%" cellpadding="5">
     <tr>
         <th width="50%">Поля из файла</th>
         <th width="50%">Поля из retailCRM</th>
     </tr>
-
-    <?php foreach ($listFields as $code => $type): ?>
-        <?php foreach ($type as $keys => $fields): ?>
-            <?php if (is_object($keys)): ?>
-                <?php foreach ($keys as $key => $field): ?>
-                    <tr>
-                        <td width="50%"><?= $key ?></td>
-                        <td width="50%"><?= $field ?></td>
-                    </tr>
+    <tr>
+        <td width="50%">поле из файла</td>
+        <td width="50%">
+            <select size="1" name="site[]">
+                <?php foreach ($listFields as $code => $type): ?>
+                    <?php if (is_array($code)): ?>
+                        <?php foreach ($type as $keys => $fields): ?>
+                            <option value="значение"><?= $fields ?></option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="значение"><?= $type ?></option>
+                    <?php endif;?>
                 <?php endforeach; ?>
-            <?php endif; ?>
-        <?php endforeach; ?>
-    <?php endforeach; ?>
-
+            </select>
+        </td>
     <tr>
-        <td width="50%">1</td>
-        <td width="50%">2</td>
-    </tr>
-    <tr>
-        <td width="50%">3</td>
-        <td width="50%">4</td>
-    </tr>
 </table>
 
 <?php

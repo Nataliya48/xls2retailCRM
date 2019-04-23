@@ -16,20 +16,13 @@ try {
         //$fields = $file->getNamesFields();
         $connect = new ConnectCrm($_POST['url'], $_POST['apiKey']);
         $sites = $connect->getSiteName();
-        $listFields = $connect->listFields()->orders;
-        /*echo '<pre>';
-        foreach ($listFields as $fields){
-            if (is_object($fields)){
-                foreach ($fields as $field){
-                    print_r($field );
-                }
-            } else {
-                print_r($fields );
-            }
-        }
-        echo '</pre>';*/
+        $listFields = $connect->listFields()['orders'];
+        echo '<pre>';
+        print_r($listFields);
+        echo '</pre>';
     }
 } catch (Exception $e) {
     $errorMsg = 'Выброшено исключение: ' . $e->getMessage() . "\n";
 }
+
 require '../src/template.php';
