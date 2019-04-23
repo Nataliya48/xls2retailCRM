@@ -45,11 +45,6 @@
 <?php //print_r(get_defined_vars()) ?>
 </pre>
 
-
-
-
-
-
 <table border="1" width="100%" cellpadding="5">
     <tr>
         <th width="50%">Поля из файла</th>
@@ -60,7 +55,7 @@
         <td width="50%">
             <select size="1" name="site[]">
                 <?php foreach ($listFields as $code => $type): ?>
-                    <?php if (is_array($code)): ?>
+                    <?php if (is_array($type)): ?>
                         <?php foreach ($type as $keys => $fields): ?>
                             <option value="значение"><?= $fields ?></option>
                         <?php endforeach; ?>

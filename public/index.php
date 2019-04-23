@@ -17,8 +17,19 @@ try {
         $connect = new ConnectCrm($_POST['url'], $_POST['apiKey']);
         $sites = $connect->getSiteName();
         $listFields = $connect->listFields()['orders'];
-        echo '<pre>';
+        /*echo '<pre>';
         print_r($listFields);
+        echo '</pre>';*/
+        echo '<pre>';
+        foreach ($listFields as $code => $type) {
+            if (is_array($type)) {
+                foreach ($type as $keys => $fields) {
+                    print_r($fields);
+                }
+            } else {
+                print_r($type);
+            }
+        }
         echo '</pre>';
     }
 } catch (Exception $e) {
