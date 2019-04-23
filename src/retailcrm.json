@@ -1,0 +1,66 @@
+{
+  "orders": {
+    "number": "Номер заказа",
+    "externalId": "Внешний ID заказа",
+    "createdAt": "Дата оформления заказа",
+    "discountManualAmount": "Денежная скидка на заказ",
+    "discountManualPercent": "Процентная скидка на заказ",
+    "lastName": "Фамилия",
+    "firstName": "Имя",
+    "patronymic": "Отчество",
+    "phone": "Телефон",
+    "email": "E-mail",
+    "customerComment": "Комментарий клиента",
+    "contragent": {
+      "contragentType": "Тип контрагента",
+      "legalName": "Полное наименование",
+      "legalAddress": "Адрес регистрации",
+      "INN": "ИНН",
+      "OKPO": "ОКПО",
+      "KPP": "КПП",
+      "OGRN": "ОГРН",
+      "OGRNIP": "ОГРНИП",
+      "certificateNumber": "Номер свидетельства",
+      "certificateDate": "Дата свидетельства",
+      "BIK": "БИК",
+      "bank": "Банк",
+      "bankAddress": "Адрес банка",
+      "corrAccount": "Корр. счёт",
+      "bankAccount": "Расчётный счёт"
+    },
+    "shipped": "Флаг отгрузки",
+    "orderType": "Тип заказа",
+    "orderMethod": "Способ оформления",
+    "customer": {
+      "externalId": "Внешний ID клиента"
+    },
+    "managerId": "ID менеджера",
+    "status": "Статус заказа",
+    "items": [
+      {
+        "initialPrice": "Цена товара",
+        "quantity": "Количество товарной позиции",
+        "offer": {
+          "externalId": "Идентификатор товара",
+          "xmlId": "Идентификатор складской системы"
+        }
+      }
+    ],
+    "delivery": {
+      "code": "Тип доставки"
+    },
+    "source": {
+      "source": "Источник",
+      "medium": "Канал",
+      "campaign": "Кампания",
+      "keyword": "Ключевое слово",
+      "content": "Содержание кампании"
+    },
+    "payments": [
+      {
+        "type": "Тип оплаты",
+        "status": "Статус оплаты"
+      }
+    ]
+  }
+}

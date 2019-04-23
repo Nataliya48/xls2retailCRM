@@ -42,6 +42,35 @@
 </form>
 <?php endif; ?>
 
+<table border="1" width="100%" cellpadding="5">
+    <tr>
+        <th width="50%">Поля из файла</th>
+        <th width="50%">Поля из retailCRM</th>
+    </tr>
+
+    <?php foreach ($listFields as $code => $type): ?>
+        <?php foreach ($type as $keys => $fields): ?>
+            <?php if (is_object($keys)): ?>
+                <?php foreach ($keys as $key => $field): ?>
+                    <tr>
+                        <td width="50%"><?= $key ?></td>
+                        <td width="50%"><?= $field ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    <?php endforeach; ?>
+
+    <tr>
+        <td width="50%">1</td>
+        <td width="50%">2</td>
+    </tr>
+    <tr>
+        <td width="50%">3</td>
+        <td width="50%">4</td>
+    </tr>
+</table>
+
 <?php
 if (isset($errorMsg)):
     echo $errorMsg;

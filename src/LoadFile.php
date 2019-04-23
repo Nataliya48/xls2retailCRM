@@ -1,5 +1,7 @@
 <?php
 
+namespace Export\PhpLoadFile;
+
 use \PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use \PhpOffice\PhpSpreadsheet\Writer\Csv;
 

@@ -1,6 +1,8 @@
 <?php
 
-Class ConnectCrm
+namespace Export;
+
+class ConnectCrm
 {
     /**
      * адрес retailCRM
@@ -52,5 +54,10 @@ Class ConnectCrm
             $arrNames[$name['code']] = $name['name'];
         }
         return $arrNames;
+    }
+
+    public function listFields()
+    {
+        return json_decode(file_get_contents(__DIR__ . '/retailcrm.json'));
     }
 }
