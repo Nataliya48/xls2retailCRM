@@ -12,28 +12,26 @@
 
 <p class="head"></p>
 
-<div>
-    <form method="post" class="form">
-        <table border="0">
-            <tr><td>
-                    Введите адрес retailCRM:
-                </td>
-                <td>
-                    <input type="text" required name="url" placeholder="https://demo.retailcrm.ru">
-                </td>
-            </tr>
-            <tr><td>
-                    Введите API ключ:
-                </td>
-                <td>
-                    <input type="text" required name="apiKey" placeholder="RiycYM83RnTR4dS7AKasJr0jtKpMe6j7">
-                </td>
-            </tr>
-        </table>
-        <br>
-        <p><input type="submit" value="Отправить"></p>
-    </form>
-</div>
+<form method="post" class="form">
+    <table border="0">
+        <tr><td>
+                Введите адрес retailCRM:
+            </td>
+            <td>
+                <input type="text" required name="url" placeholder="https://demo.retailcrm.ru">
+            </td>
+        </tr>
+        <tr><td>
+                Введите API ключ:
+            </td>
+            <td>
+                <input type="text" required name="apiKey" placeholder="RiycYM83RnTR4dS7AKasJr0jtKpMe6j7">
+            </td>
+        </tr>
+    </table>
+    <br>
+    <p><input type="submit" value="Отправить"></p>
+</form>
 
 <?php
 if (isset($errorMsg)):
