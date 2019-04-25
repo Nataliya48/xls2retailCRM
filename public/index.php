@@ -19,4 +19,5 @@ try {
     $errorMsg = 'Выброшено исключение: ' . $e->getMessage() . "\n";
 }
 
-require '../src/templateLoadFile.php';
+//require '../src/templateLoadFile.php';
+require '../src/templateConnectCrm.php';
