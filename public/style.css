@@ -1,21 +1,26 @@
 h1.header-title {
     font-family: 'latoregular', Arial, Helvetica, sans-serif;
     color: #4d4d4d;
-    margin:25px 10% 25px 10%;
+    margin: 25px 10% 25px 10%;
 }
 
 div {
     border: 4px dashed #b3b3b3;
     border-radius: 10px;
-    margin:0 10% 0 10%;
-    width:80%;
-    height:70%;
+    margin: 0 10% 10px 10%;
+    width: 80%;
+    height: 70%;
+}
+
+.head {
+    border-top: 1px solid #e5e5e5;
+    margin: 0 10% 15px 10%;
 }
 
 form.form {
-    margin:10% 30% 20% 30%;
-    width:50%;
-    height:50%;
+    margin: 10% 30% 20% 30%;
+    width: 50%;
+    height: 50%;
 }
 
 body {
@@ -24,9 +29,18 @@ body {
 
 p.text {
     color: #4d4d4d;
-    margin:25px 10% 25px 10%;
+    margin: 25px 10% 25px 10%;
 }
 
 p.load {
     color: #666666;
+}
+
+.footer {
+    border-top: 1px solid #e5e5e5;
+    margin: 0 10% 0 10%;
+}
+
+.foot {
+    margin: 20px 10% 25px 0%;
 }

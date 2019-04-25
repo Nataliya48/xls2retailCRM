@@ -1,8 +1,5 @@
 <?php
 require_once '../vendor/autoload.php';
-//require '../src/ConnectCrm.php';
-//require '../src/SendRequest.php';
-//require '../src/LoadFile.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -22,5 +19,4 @@ try {
     $errorMsg = 'Выброшено исключение: ' . $e->getMessage() . "\n";
 }
 
-//require '../src/template.php';
 require '../src/templateLoadFile.php';
