@@ -51,20 +51,29 @@
         <th width="50%">Поля из retailCRM</th>
     </tr>
     <tr>
-        <td width="50%">поле из файла</td>
+
+        <?php if (!empty($fieldsFile)):  ?>
+        <?php foreach ($fieldsFile as $field): ?>
+            <td width="50%"><?= $field ?></td>
+        <?php endforeach; ?>
+        <?php endif;?>
+
         <td width="50%">
             <select size="1" name="site[]">
+                <?php if (!empty($listFields)): ?>
                 <?php foreach ($listFields as $code => $type): ?>
                     <?php if (is_array($type)): ?>
                         <?php foreach ($type as $keys => $fields): ?>
-                            <option value="значение"><?= $fields ?></option>
+                            <option value="<?= $keys ?>"><?= $fields ?></option>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <option value="значение"><?= $type ?></option>
+                        <option value="<?= $code ?>"><?= $type ?></option>
                     <?php endif;?>
                 <?php endforeach; ?>
+                <?php endif;?>
             </select>
         </td>
+
     <tr>
 </table>
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Export\PhpLoadFile;
+namespace Export;
 
 use \PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use \PhpOffice\PhpSpreadsheet\Writer\Csv;
@@ -101,21 +101,21 @@ class LoadFile
 
     /**
      * Export constructor.
-     * @throws Exception ошибки загрузки файла
+     * @throws \Exception ошибки загрузки файла
      */
     public function __construct($file)
     {
         $this->tmpFile = $file;
         if ($this->tmpFile['error']) {
-            throw new Exception('File Download Error #' . $this->tmpFile['error']);
+            throw new \Exception('File Download Error #' . $this->tmpFile['error']);
         }
 
         if (!is_uploaded_file($this->tmpFile['tmp_name'])) {
-            throw new Exception('Access denied');
+            throw new \Exception('Access denied');
         }
 
         if (mb_detect_encoding(file_get_contents($this->tmpFile['tmp_name'])) !== 'UTF-8') {
-            throw new Exception('Incorrect encoding. Use UTF-8');
+            throw new \Exception('Incorrect encoding. Use UTF-8');
         }
 
         $this->extension = $this->getExtension($this->tmpFile['name']);
@@ -132,7 +132,7 @@ class LoadFile
      * Возвращает информацию, считанную с файла
      *
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
     public function getFileContents(): array
     {
@@ -147,7 +147,7 @@ class LoadFile
                 return $this->csvToArr($this->localFile);
                 break;
             default:
-                throw new Exception('Incorrect format. Use *.csv or *.xls(x)');
+                throw new \Exception('Incorrect format. Use *.csv or *.xls(x)');
         }
     }
 

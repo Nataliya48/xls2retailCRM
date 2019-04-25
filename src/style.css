@@ -1,3 +1,11 @@
 h1.header-title {
     font-family: "Monotype Corsiva", Cursive;
 }
+
+div {
+    width: 50%;
+    height: 50%; /* Размеры */
+    outline: 2px solid #000; /* Чёрная рамка */
+    border: 3px solid #fff; /* Белая рамка */
+    border-radius: 50px; /* Радиус скругления */
+}

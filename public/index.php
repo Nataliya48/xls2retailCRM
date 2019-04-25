@@ -6,34 +6,21 @@ require_once '../vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Export\PhpLoadFile\LoadFile;
+use Export\LoadFile;
 use Export\ConnectCrm;
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        //$file = new LoadFile($_FILES['file']);
-        //$table = $file->getFileContents();
-        //$fields = $file->getNamesFields();
+        $file = new LoadFile($_FILES['file']);
+        $table = $file->getFileContents();
+        $fieldsFile = $file->getNamesFields();
         $connect = new ConnectCrm($_POST['url'], $_POST['apiKey']);
         $sites = $connect->getSiteName();
         $listFields = $connect->listFields()['orders'];
-        /*echo '<pre>';
-        print_r($listFields);
-        echo '</pre>';*/
-        echo '<pre>';
-        foreach ($listFields as $code => $type) {
-            if (is_array($type)) {
-                foreach ($type as $keys => $fields) {
-                    print_r($fields);
-                }
-            } else {
-                print_r($type);
-            }
-        }
-        echo '</pre>';
     }
 } catch (Exception $e) {
     $errorMsg = 'Выброшено исключение: ' . $e->getMessage() . "\n";
 }
 
-require '../src/template.php';
+//require '../src/template.php';
+require '../src/templateLoadFile.php';
