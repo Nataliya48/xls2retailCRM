@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -16,6 +17,7 @@ try {
                 $connect = new ConnectCrm($_POST['url'], $_POST['apiKey']);
                 $sites = $connect->getSiteName();
                 $listFields = $connect->listFields()['orders'];
+                $_SESSION['listFields'] = $listFields;
                 break;
             case "connect" :
                 require_once("../src/templateMapping.php");
@@ -24,12 +26,9 @@ try {
                 require_once("");
                 break;
             default :
-                require_once("page404.php"); //сделать 404 страницу
+                require_once("../src/template404.php"); //сделать 404 страницу
                 break;
         }
-
-        $request = new SendRequest($_POST['url'], $_POST['apiKey'], $table, $mapping);
-
     } else {
         require_once('../src/templateLoadFile.php');
         $file = new LoadFile($_FILES['file']);
