@@ -13,6 +13,7 @@
 <p class="head"></p>
 
 <form method="post" class="form">
+    <input type="hidden" name="action" value="connect">
     <table border="0">
         <tr><td>
                 Введите адрес retailCRM:
