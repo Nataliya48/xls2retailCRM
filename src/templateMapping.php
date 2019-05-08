@@ -1,5 +1,7 @@
 <?php session_start();?>
 <?php $listFields = $_SESSION['listFields'];?>
+<?php $fieldsFile = $_SESSION['fieldsFile'];?>
+
 <html>
 <head>
     <link href="style.css" type="text/css" rel="stylesheet"/>
@@ -15,18 +17,17 @@
 <p class="head"></p>
 
 <div>
+    <form method="post" class="form" action="index.php?action=mapping">
     <table border="1" width="100%" cellpadding="5">
         <tr>
             <th width="50%">Поля из файла</th>
             <th width="50%">Поля из retailCRM</th>
         </tr>
+        <?php if (!empty($fieldsFile)):  ?>
+        <?php foreach ($fieldsFile as $key => $field): ?>
         <tr>
 
-            <?php if (!empty($fieldsFile)):  ?>
-                <?php foreach ($fieldsFile as $field): ?>
-                    <td width="50%"><?= $field ?></td>
-                <?php endforeach; ?>
-            <?php endif;?>
+            <td width="50%"><input type="hidden" name="field[]" value="<?= $key ?>"><?= $field ?></td>
 
             <td width="50%">
                 <select size="1" name="site[]">
@@ -45,7 +46,11 @@
             </td>
 
         <tr>
+            <?php endforeach; ?>
+            <?php endif;?>
     </table>
+        <p><input type="submit" value="Отправить"></p>
+    </form>
 </div>
 
 <?php

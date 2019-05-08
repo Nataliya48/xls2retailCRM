@@ -19,13 +19,17 @@ try {
                 $sites = $connect->getSiteName();
                 $listFields = $connect->listFields()['orders'];
                 $_SESSION['listFields'] = $listFields;
+                $_SESSION['fieldsFile'] = $fieldsFile;
                 require_once("../src/templateSelectOption.php");
                 break;
             case "connect" :
                 require_once("../src/templateMapping.php");
                 break;
+            case "mapping" :
+                require_once("../src/templateFinal.php");
+                break;
             default :
-                require_once("../src/template404.php"); //сделать 404 страницу
+                require_once("../src/template404.php");
                 break;
         }
     } else {
