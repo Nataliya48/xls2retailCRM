@@ -1,6 +1,6 @@
 <?php session_start();?>
-<?php $listFields = $_SESSION['listFields'];?>
-<?php $fieldsFile = $_SESSION['fieldsFile'];?>
+<?php $listFieldsCrm = $_SESSION['listFieldsCrm'];?>
+<?php $fieldsFileLoad = $_SESSION['fieldsFileLoad'];?>
 
 <html>
 <head>
@@ -23,16 +23,16 @@
             <th width="50%">Поля из файла</th>
             <th width="50%">Поля из retailCRM</th>
         </tr>
-        <?php if (!empty($fieldsFile)):  ?>
-        <?php foreach ($fieldsFile as $key => $field): ?>
+        <?php if (!empty($fieldsFileLoad)):  ?>
+        <?php foreach ($fieldsFileLoad as $field): ?>
         <tr>
 
-            <td width="50%"><input type="hidden" name="field[]" value="<?= $key ?>"><?= $field ?></td>
+            <td width="50%"><input type="hidden" name="file[]" value="<?= $field ?>"><?= $field ?></td>
 
             <td width="50%">
-                <select size="1" name="site[]">
-                    <?php if (!empty($listFields)): ?>
-                        <?php foreach ($listFields as $code => $type): ?>
+                <select size="1" name="crm[]">
+                    <?php if (!empty($listFieldsCrm)): ?>
+                        <?php foreach ($listFieldsCrm as $code => $type): ?>
                             <?php if (is_array($type)): ?>
                                 <?php foreach ($type as $keys => $fields): ?>
                                     <option value="<?= $keys ?>"><?= $fields ?></option>

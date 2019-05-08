@@ -56,8 +56,29 @@ class ConnectCrm
         return $arrNames;
     }
 
+    /**
+     * Получаем список полей CRM
+     *
+     * @return mixed
+     */
     public function listFields()
     {
-        return json_decode(file_get_contents(__DIR__ . '/retailcrm.json'), true);
+        $listFields = json_decode(file_get_contents(__DIR__ . '/retailcrm.json'), true);
+        return array_push($listFields['orders'], ['customFields' => $this->customFields()]);
+    }
+
+    /**
+     * Возвращает список пользовательских полей CRM
+     *
+     * @return array
+     */
+    private function customFields()
+    {
+        $fields = $this->connectionToCrm()->request->customFieldsList();
+        $customFields = [];
+        foreach ($fields as $field){
+            $customFields[$field['code']] = $field['name'];
+        }
+        return $customFields;
     }
 }

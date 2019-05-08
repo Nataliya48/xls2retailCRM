@@ -15,11 +15,6 @@ Class SendRequest
     private $table;
 
     /**
-     * @var array
-     */
-    private $symbolicCode;
-
-    /**
      * Подключение к CRM
      *
      * @param $urlCrm адрес CRM
@@ -42,9 +37,8 @@ Class SendRequest
      * @param $apiKey ключ API
      * @throws Exception
      */
-    public function __construct($urlCrm, $apiKey, $table, $mapping)
+    public function __construct($urlCrm, $apiKey, $table, $fieldCrm, $fieldFile)
     {
-        $this->symbolicCode = $table[0];
         unset($table[0]);
         $this->table = $table;
 

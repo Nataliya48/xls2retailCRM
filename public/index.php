@@ -14,18 +14,22 @@ try {
             case "load" :
                 $file = new LoadFile($_FILES['file']);
                 $table = $file->getFileContents();
-                $fieldsFile = $file->getNamesFields();
-                $connect = new ConnectCrm($_POST['url'], $_POST['apiKey']);
+                $_SESSION['table'] = $table;
+                $fieldsFileLoad = $file->getNamesFields();
+                $_SESSION['url'] = $_POST['url'];
+                $_SESSION['apiKey'] = $_POST['apiKey'];
+                $connect = new ConnectCrm($_SESSION['url'], $_SESSION['apiKey']);
                 $sites = $connect->getSiteName();
-                $listFields = $connect->listFields()['orders'];
-                $_SESSION['listFields'] = $listFields;
-                $_SESSION['fieldsFile'] = $fieldsFile;
+                $listFieldsCrm = $connect->listFields();
+                $_SESSION['listFieldsCrm'] = $listFieldsCrm;
+                $_SESSION['fieldsFileLoad'] = $fieldsFileLoad;
                 require_once("../src/templateSelectOption.php");
                 break;
             case "connect" :
                 require_once("../src/templateMapping.php");
                 break;
             case "mapping" :
+                $request = new SendRequest($_SESSION['url'], $_SESSION['apiKey'], $_SESSION['table'], $_POST['file'], $_POST['crm']);
                 require_once("../src/templateFinal.php");
                 break;
             default :
