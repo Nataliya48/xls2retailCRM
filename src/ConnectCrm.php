@@ -63,8 +63,9 @@ class ConnectCrm
      */
     public function listFields()
     {
-        $listFields = json_decode(file_get_contents(__DIR__ . '/retailcrm.json'), true);
-        return array_push($listFields['orders'], ['customFields' => $this->customFields()]);
+        $listFields = json_decode(file_get_contents(__DIR__ . '/retailcrm.json'), true)['orders'];
+        $listFields['customFields'] = $this->customFields();
+        return $listFields;
     }
 
     /**
