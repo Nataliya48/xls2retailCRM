@@ -37,6 +37,11 @@
                             <option value="<?= $code ?>"><?= $type ?></option>
                         <?php endforeach; ?>
                     <?php endif;?>
+                    <?php if (!empty($customFields)): ?>
+                        <?php foreach ($customFields as $code => $type): ?>
+                            <option value="<?= 'customFields.' . $code ?>"><?= $type ?></option>
+                        <?php endforeach; ?>
+                    <?php endif;?>
                 </select>
             </td>
 
