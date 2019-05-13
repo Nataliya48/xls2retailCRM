@@ -21,8 +21,10 @@ try {
                 $connect = new ConnectCrm($_SESSION['url'], $_SESSION['apiKey']);
                 $sites = $connect->getSiteName();
                 $listFieldsCrm = $connect->listFields();
+                $customFields = $connect->customFields();
                 $_SESSION['listFieldsCrm'] = $listFieldsCrm;
                 $_SESSION['fieldsFileLoad'] = $fieldsFileLoad;
+                $_SESSION['customFields'] = $customFields;
                 require_once("../src/templateSelectOption.php");
                 break;
             case "connect" :

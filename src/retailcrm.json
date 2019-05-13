@@ -12,47 +12,34 @@
     "phone": "Телефон",
     "email": "E-mail",
     "customerComment": "Комментарий клиента",
-    "contragent": {
-      "contragentType": "Тип контрагента",
-      "legalName": "Полное наименование",
-      "legalAddress": "Адрес регистрации",
-      "INN": "ИНН",
-      "OKPO": "ОКПО",
-      "KPP": "КПП",
-      "OGRN": "ОГРН",
-      "OGRNIP": "ОГРНИП",
-      "certificateNumber": "Номер свидетельства",
-      "certificateDate": "Дата свидетельства",
-      "BIK": "БИК",
-      "bank": "Банк",
-      "bankAddress": "Адрес банка",
-      "corrAccount": "Корр. счёт",
-      "bankAccount": "Расчётный счёт"
-    },
+    "contragent.contragentType": "Тип контрагента",
+    "contragent.legalName": "Полное наименование",
+    "contragent.legalAddress": "Адрес регистрации",
+    "contragent.INN": "ИНН",
+    "contragent.OKPO": "ОКПО",
+    "contragent.KPP": "КПП",
+    "contragent.OGRN": "ОГРН",
+    "contragent.certificateNumber": "Номер свидетельства",
+    "contragent.certificateDate": "Дата свидетельства",
+    "contragent.BIK": "БИК",
+    "contragent.bankAddress": "Адрес банка",
+    "contragent.corrAccount": "Корр. счёт",
+    "contragent.bankAccount": "Расчётный счёт",
     "shipped": "Флаг отгрузки",
     "orderType": "Тип заказа",
     "orderMethod": "Способ оформления",
-    "customer": {
-      "externalId": "Внешний ID клиента"
-    },
+    "customer.externalId": "Внешний ID клиента",
     "managerId": "ID менеджера",
     "status": "Статус заказа",
-    "items": {
-        "externalId": "Идентификатор товара"
-    },
-    "delivery": {
-      "code": "Тип доставки"
-    },
-    "source": {
-      "source": "Источник",
-      "medium": "Канал",
-      "campaign": "Кампания",
-      "keyword": "Ключевое слово",
-      "content": "Содержание кампании"
-    },
-    "payments": {
-      "type": "Тип оплаты",
-      "status": "Статус оплаты"
-    }
+    "items.externalId": "Идентификатор товара",
+    "items.name": "Название товара",
+    "delivery.code": "Тип доставки",
+    "source.source": "Источник",
+    "source.medium": "Канал",
+    "source.campaign": "Кампания",
+    "source.keyword": "Ключевое слово",
+    "source.content": "Содержание кампании",
+    "payments.type": "Тип оплаты",
+    "payments.status": "Статус оплаты"
   }
 }

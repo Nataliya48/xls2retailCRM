@@ -1,6 +1,7 @@
 <?php session_start();?>
 <?php $listFieldsCrm = $_SESSION['listFieldsCrm'];?>
 <?php $fieldsFileLoad = $_SESSION['fieldsFileLoad'];?>
+<?php $customFields = $_SESSION['customFields'];?>
 
 <html>
 <head>
@@ -33,13 +34,7 @@
                 <select size="1" name="crm[]">
                     <?php if (!empty($listFieldsCrm)): ?>
                         <?php foreach ($listFieldsCrm as $code => $type): ?>
-                            <?php if (is_array($type)): ?>
-                                <?php foreach ($type as $keys => $fields): ?>
-                                    <option value="<?= $keys ?>"><?= $fields ?></option>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <option value="<?= $code ?>"><?= $type ?></option>
-                            <?php endif;?>
+                            <option value="<?= $code ?>"><?= $type ?></option>
                         <?php endforeach; ?>
                     <?php endif;?>
                 </select>
