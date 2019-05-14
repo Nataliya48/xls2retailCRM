@@ -71,6 +71,10 @@ Class SendRequest
         $this->fieldsCrm = $fieldsCrm;
         $this->fieldsFile = $fieldsFile;
 
+        $portions = array_chunk($this->assemblyOrder(), 50, true);
+        /*foreach ($portions as $portion){
+            $this->createOrders($portion);
+        }*/
         //'car' => 'fast'
         //array_search("car",array_keys($a)); = 1
     }
@@ -87,11 +91,37 @@ Class SendRequest
             $orderCrm = [];
             foreach ($order as $keyFieldFile => $field){
                 $keyFieldCrm = array_search($keyFieldFile, array_keys($this->fieldsCrm));
-                $orderCrm[$keyFieldCrm] = $field;
+                if (strpos($this->fieldsCrm[$keyFieldCrm], '.')){
+                    $fields = explode('.', $this->fieldsCrm[$keyFieldCrm]);
+                    if ($fields[0] === 'items' and $fields[1] === 'externalId'){
+                        $orderCrm[$fields[0]] = [['offer' => ['externalId' => $field]]];
+                    } elseif ($fields[0] === 'items' and $fields[1] === 'name'){
+                        $orderCrm[$fields[0]] = [['name' => $field]];
+                    } else {
+                        $orderCrm[$fields[0]] = [$fields[1] => $field];
+                    }
+                } elseif ($this->fieldsCrm[$keyFieldCrm] === 'null'){
+                    continue;
+                } else {
+                    $orderCrm[$this->fieldsCrm[$keyFieldCrm]] = $field;
+                }
             }
             $assemblyOrderCrm[] = $orderCrm;
         }
         return $assemblyOrderCrm;
+    }
+
+    private function createOrders($portion)
+    {
+        try {
+            $response = $this->connectionToCrm()->request->ordersUpload($portion);
+        } catch (\RetailCrm\Exception\CurlException $e) {
+            throw new Exception('Connection error: ' . $e->getMessage());
+        }
+        if (!$response->isSuccessful()) {
+            $this->writeLog('ordersUpload');
+        }
+        return $response;
     }
 
     /**

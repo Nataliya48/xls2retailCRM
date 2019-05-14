@@ -31,10 +31,11 @@ try {
                 require_once("../src/templateMapping.php");
                 break;
             case "mapping" :
-                $request = new SendRequest($_SESSION['url'], $_SESSION['apiKey'], $_SESSION['table'], $_POST['file'], $_POST['crm']);
-                $mapping = $request->printTable();
+                $request = new SendRequest($_SESSION['url'], $_SESSION['apiKey'], $_SESSION['table'], $_POST['crm'], $_POST['file']);
+                //$mapping = $request->printTable();
                 $_SESSION['mapping'] = $mapping;
-                var_dump($request->assemblyOrder());
+                $assemblyOrder = $request->assemblyOrder();
+                $_SESSION['assemblyOrder'] = $assemblyOrder;
                 require_once("../src/templateFinal.php");
                 break;
             default :

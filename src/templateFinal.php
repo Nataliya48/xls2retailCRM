@@ -1,5 +1,6 @@
 <?php session_start();?>
 <?php $mapping = $_SESSION['mapping']; ?>
+<?php $assemblyOrder = $_SESSION['assemblyOrder']; ?>
 <html>
 <head>
     <link href="style.css" type="text/css" rel="stylesheet"/>
@@ -15,6 +16,7 @@
 <div>
     <?php //var_dump($_POST); ?>
     <?php //var_dump($mapping); ?>
+    <?php echo var_dump($assemblyOrder); ?>
     <?php echo 'success'; ?>
 </div>
 
