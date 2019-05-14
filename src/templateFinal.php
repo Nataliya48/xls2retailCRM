@@ -1,3 +1,5 @@
+<?php session_start();?>
+<?php $mapping = $_SESSION['mapping']; ?>
 <html>
 <head>
     <link href="style.css" type="text/css" rel="stylesheet"/>
@@ -12,6 +14,7 @@
 
 <div>
     <?php var_dump($_POST); ?>
+    <?php var_dump($mapping); ?>
 </div>
 
 <?php

@@ -13,6 +13,17 @@ Class SendRequest
      * @var array
      */
     private $table;
+    /**
+     * адрес retailCRM
+     * @var
+     */
+    private $url;
+    /**
+     * API ключ
+     * @var
+     */
+    private $apiKey;
+
 
     /**
      * Подключение к CRM
@@ -21,11 +32,11 @@ Class SendRequest
      * @param $apiKey ключ API
      * @return \RetailCrm\ApiClient
      */
-    private function connectionToCrm($urlCrm, $apiKey)
+    private function connectionToCrm()
     {
         $client = new \RetailCrm\ApiClient(
-            $urlCrm,
-            $apiKey,
+            $this->url,
+            $this->apiKey,
             \RetailCrm\ApiClient::V5
         );
         return $client;
@@ -37,25 +48,64 @@ Class SendRequest
      * @param $apiKey ключ API
      * @throws Exception
      */
-    public function __construct($urlCrm, $apiKey, $table, $fieldsCrm, $fieldsFile)
+    public function __construct($url, $apiKey, $table, $fieldsCrm, $fieldsFile)
     {
+        $this->url = $url;
+        $this->apiKey = $apiKey;
         unset($table[0]);
         $this->table = $table;
 
         try {
-            $this->response = $this->connectionToCrm($urlCrm, $apiKey)->request->ordersList();
+            $this->response = $this->connectionToCrm()->request->ordersList();
         } catch (\RetailCrm\Exception\CurlException $e) {
             throw new Exception('Connection error: ' . $e->getMessage());
         }
 
-        $this->getMapp($fieldsCrm, $fieldsFile);
         //'car' => 'fast'
         //array_search("car",array_keys($a)); = 1
     }
 
-    private function getMapp($fieldsCrm, $fieldsFile)
+    /**
+     * Получить символьный код статуса из CRM
+     *
+     * @return array
+     */
+    private function getCodeStatus()
     {
+        try {
+            $this->response = $this->connectionToCrm()->request->statusesList();
+        } catch (\RetailCrm\Exception\CurlException $e) {
+            throw new Exception('Connection error: ' . $e->getMessage());
+        }
+        $statusCodeList = [];
+        if ($this->response->isSuccessful()) {
+            foreach ($this->response->statuses as $status){
+                $statusCodeList[$status['code']] = $status['name'];
+            }
+        } else {
+            $this->writeLog('statusesList');
+        }
+        return $statusCodeList;
+    }
 
+    /**
+     * Запись в лог-файл ошибки API запроса
+     *
+     * @param $method API метод
+     */
+    private function writeLog($method)
+    {
+        file_put_contents(__DIR__ . '/response.log', json_encode([
+            'date' => date('Y-m-d H:i:s'),
+            'method' => $method,
+            'code' => $this->response->getStatusCode(),
+            'msg' => $this->response->getErrorMsg()
+        ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), FILE_APPEND);
+    }
+
+    public function printTable()
+    {
+        return $this->table;
     }
 
     //формировать каждую строку как отдельный заказ перед отправкой

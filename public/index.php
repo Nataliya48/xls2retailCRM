@@ -32,6 +32,8 @@ try {
                 break;
             case "mapping" :
                 $request = new SendRequest($_SESSION['url'], $_SESSION['apiKey'], $_SESSION['table'], $_POST['file'], $_POST['crm']);
+                $mapping = $request->printTable();
+                $_SESSION['mapping'] = $mapping;
                 require_once("../src/templateFinal.php");
                 break;
             default :
