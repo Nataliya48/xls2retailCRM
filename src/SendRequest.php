@@ -2,7 +2,7 @@
 
 namespace Export;
 
-Class SendRequest
+class SendRequest
 {
     /**
      * Массив заказов
@@ -173,7 +173,7 @@ Class SendRequest
      */
     private function writeLog($method, $response)
     {
-        file_put_contents(__DIR__ . '/error.log', json_encode([
+        file_put_contents(realpath(__DIR__ . '/../logs/error.log'), json_encode([
             'date' => date('Y-m-d H:i:s'),
             'method' => $method,
             'code' => $response->getStatusCode(),
