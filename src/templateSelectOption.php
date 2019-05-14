@@ -15,7 +15,7 @@
 <div>
     <form method="post" class="form" action="index.php?action=connect">
         <p>Что загружаем: </p>
-        <p><select size="1" name="type[]">
+        <p><select size="1" name="type">
                 <option disabled>Что загружаем</option>
                 <option value="orders">Заказы</option>
                 <option value="customers">Клиенты</option>
@@ -23,7 +23,7 @@
 
         <p>Выберите магазин: </p>
         <?php if (!empty($sites)): ?>
-        <p><select size="1" name="site[]">
+        <p><select size="1" name="site">
                 <option disabled>Выберите магазин</option>
                 <?php foreach ($sites as $code => $name): ?>
                     <option value="<?= $code ?>"><?= $name ?></option>

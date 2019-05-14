@@ -29,10 +29,19 @@ try {
                 break;
             case "connect" :
                 require_once("../src/templateMapping.php");
+                $_SESSION['type'] = $_POST['type'];
+                $_SESSION['site'] = $_POST['site'];
                 break;
             case "mapping" :
-                $request = new SendRequest($_SESSION['url'], $_SESSION['apiKey'], $_SESSION['table'], $_POST['crm'], $_POST['file']);
-                //$mapping = $request->printTable();
+                $request = new SendRequest(
+                    $_SESSION['url'],
+                    $_SESSION['apiKey'],
+                    $_SESSION['table'],
+                    $_POST['crm'],
+                    $_POST['file'],
+                    $_SESSION['type'],
+                    $_SESSION['site']
+                );
                 $_SESSION['mapping'] = $mapping;
                 $assemblyOrder = $request->assemblyOrder();
                 $_SESSION['assemblyOrder'] = $assemblyOrder;

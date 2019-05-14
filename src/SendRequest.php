@@ -40,6 +40,13 @@ Class SendRequest
     private $fieldsFile;
 
     /**
+     * Магазин из CRM
+     *
+     * @var string
+     */
+    private $site;
+
+    /**
      * Подключение к CRM
      *
      * @param $urlCrm адрес CRM
@@ -62,7 +69,7 @@ Class SendRequest
      * @param $apiKey ключ API
      * @throws Exception
      */
-    public function __construct($url, $apiKey, $table, $fieldsCrm, $fieldsFile)
+    public function __construct($url, $apiKey, $table, $fieldsCrm, $fieldsFile, $type, $site)
     {
         $this->url = $url;
         $this->apiKey = $apiKey;
@@ -70,13 +77,14 @@ Class SendRequest
         $this->table = $table;
         $this->fieldsCrm = $fieldsCrm;
         $this->fieldsFile = $fieldsFile;
+        $this->site = $site;
 
-        $portions = array_chunk($this->assemblyOrder(), 50, true);
-        /*foreach ($portions as $portion){
-            $this->createOrders($portion);
-        }*/
-        //'car' => 'fast'
-        //array_search("car",array_keys($a)); = 1
+        if ($type === 'orders') {
+            $portions = array_chunk($this->assemblyOrder(), 50, true);
+            foreach ($portions as $portion) {
+                $this->createOrders($portion);
+            }
+        }
     }
 
     /**
@@ -95,10 +103,16 @@ Class SendRequest
                     $fields = explode('.', $this->fieldsCrm[$keyFieldCrm]);
                     if ($fields[0] === 'items' and $fields[1] === 'externalId'){
                         $orderCrm[$fields[0]] = [['offer' => ['externalId' => $field]]];
-                    } elseif ($fields[0] === 'items' and $fields[1] === 'name'){
+                    } elseif ($fields[0] === 'items' and $fields[1] === 'name') {
                         $orderCrm[$fields[0]] = [['name' => $field]];
                     } else {
                         $orderCrm[$fields[0]] = [$fields[1] => $field];
+                    }
+                } elseif ($this->fieldsCrm[$keyFieldCrm] === 'status'){
+                    foreach ($this->getListStatusCode() as $code => $status){
+                        if ($status === $field){
+                            $orderCrm[$this->fieldsCrm[$keyFieldCrm]] = $code;
+                        }
                     }
                 } elseif ($this->fieldsCrm[$keyFieldCrm] === 'null'){
                     continue;
@@ -111,17 +125,21 @@ Class SendRequest
         return $assemblyOrderCrm;
     }
 
+    /**
+     * Массовое создание пакета заказов
+     *
+     * @param $portion массив заказов
+     */
     private function createOrders($portion)
     {
         try {
-            $response = $this->connectionToCrm()->request->ordersUpload($portion);
+            $response = $this->connectionToCrm()->request->ordersUpload($portion, $this->site);
         } catch (\RetailCrm\Exception\CurlException $e) {
             throw new Exception('Connection error: ' . $e->getMessage());
         }
         if (!$response->isSuccessful()) {
-            $this->writeLog('ordersUpload');
+            $this->writeLog('ordersUpload', $response);
         }
-        return $response;
     }
 
     /**
@@ -142,7 +160,7 @@ Class SendRequest
                 $statusCodeList[$status['code']] = $status['name'];
             }
         } else {
-            $this->writeLog('statusesList');
+            $this->writeLog('statusesList', $response);
         }
         return $statusCodeList;
     }
@@ -151,14 +169,15 @@ Class SendRequest
      * Запись в лог-файл ошибки API запроса
      *
      * @param $method API метод
+     * @param $response запрос
      */
-    private function writeLog($method)
+    private function writeLog($method, $response)
     {
         file_put_contents(__DIR__ . '/error.log', json_encode([
             'date' => date('Y-m-d H:i:s'),
             'method' => $method,
-            'code' => $this->response->getStatusCode(),
-            'msg' => $this->response->getErrorMsg()
+            'code' => $response->getStatusCode(),
+            'msg' => $response->getErrorMsg()
         ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), FILE_APPEND);
     }
 

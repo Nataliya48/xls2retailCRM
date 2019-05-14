@@ -14,9 +14,6 @@
 </header>
 
 <div>
-    <?php //var_dump($_POST); ?>
-    <?php //var_dump($mapping); ?>
-    <?php echo var_dump($assemblyOrder); ?>
     <?php echo 'success'; ?>
 </div>
 
