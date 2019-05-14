@@ -180,9 +180,4 @@ class SendRequest
             'msg' => $response->getErrorMsg()
         ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), FILE_APPEND);
     }
-
-    public function printTable()
-    {
-        return $this->table;
-    }
 }
