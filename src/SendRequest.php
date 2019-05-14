@@ -7,7 +7,7 @@ Class SendRequest
     /**
      * @var \RetailCrm\Response\ApiResponse
      */
-    private $response;
+    //private $response;
 
     /**
      * @var array
@@ -55,31 +55,27 @@ Class SendRequest
         unset($table[0]);
         $this->table = $table;
 
-        try {
-            $this->response = $this->connectionToCrm()->request->ordersList();
-        } catch (\RetailCrm\Exception\CurlException $e) {
-            throw new Exception('Connection error: ' . $e->getMessage());
-        }
+
 
         //'car' => 'fast'
         //array_search("car",array_keys($a)); = 1
     }
 
     /**
-     * Получить символьный код статуса из CRM
+     * Получить список символьных кодов статусов из CRM
      *
      * @return array
      */
-    private function getCodeStatus()
+    private function getListStatusCode()
     {
         try {
-            $this->response = $this->connectionToCrm()->request->statusesList();
+            $response = $this->connectionToCrm()->request->statusesList();
         } catch (\RetailCrm\Exception\CurlException $e) {
             throw new Exception('Connection error: ' . $e->getMessage());
         }
         $statusCodeList = [];
-        if ($this->response->isSuccessful()) {
-            foreach ($this->response->statuses as $status){
+        if ($response->isSuccessful()) {
+            foreach ($response->statuses as $status){
                 $statusCodeList[$status['code']] = $status['name'];
             }
         } else {
@@ -95,7 +91,7 @@ Class SendRequest
      */
     private function writeLog($method)
     {
-        file_put_contents(__DIR__ . '/response.log', json_encode([
+        file_put_contents(__DIR__ . '/error.log', json_encode([
             'date' => date('Y-m-d H:i:s'),
             'method' => $method,
             'code' => $this->response->getStatusCode(),
