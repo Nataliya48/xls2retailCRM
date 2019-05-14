@@ -82,14 +82,16 @@ Class SendRequest
      */
     public function assemblyOrder()
     {
-        $orderCrm = [];
+        $assemblyOrderCrm = [];
         foreach ($this->table as $order){
+            $orderCrm = [];
             foreach ($order as $keyFieldFile => $field){
                 $keyFieldCrm = array_search($keyFieldFile, array_keys($this->fieldsCrm));
                 $orderCrm[$keyFieldCrm] = $field;
             }
+            $assemblyOrderCrm[] = $orderCrm;
         }
-        return $orderCrm;
+        return $assemblyOrderCrm;
     }
 
     /**
