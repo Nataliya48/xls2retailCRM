@@ -13,8 +13,9 @@
 </header>
 
 <div>
-    <?php var_dump($_POST); ?>
-    <?php var_dump($mapping); ?>
+    <?php //var_dump($_POST); ?>
+    <?php //var_dump($mapping); ?>
+    <?php echo 'success'; ?>
 </div>
 
 <?php

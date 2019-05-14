@@ -5,25 +5,39 @@ namespace Export;
 Class SendRequest
 {
     /**
-     * @var \RetailCrm\Response\ApiResponse
-     */
-    //private $response;
-
-    /**
+     * Массив заказов
+     *
      * @var array
      */
     private $table;
+
     /**
-     * адрес retailCRM
-     * @var
+     * Адрес retailCRM
+     *
+     * @var string
      */
     private $url;
+
     /**
      * API ключ
-     * @var
+     *
+     * @var string
      */
     private $apiKey;
 
+    /**
+     * Поля заказов из CRM
+     *
+     * @var array
+     */
+    private $fieldsCrm;
+
+    /**
+     * Поля заказов из файла xls
+     *
+     * @var array
+     */
+    private $fieldsFile;
 
     /**
      * Подключение к CRM
@@ -54,11 +68,28 @@ Class SendRequest
         $this->apiKey = $apiKey;
         unset($table[0]);
         $this->table = $table;
-
-
+        $this->fieldsCrm = $fieldsCrm;
+        $this->fieldsFile = $fieldsFile;
 
         //'car' => 'fast'
         //array_search("car",array_keys($a)); = 1
+    }
+
+    /**
+     * Формирование массива для отправки
+     *
+     * @return array
+     */
+    public function assemblyOrder()
+    {
+        $orderCrm = [];
+        foreach ($this->table as $order){
+            foreach ($order as $keyFieldFile => $field){
+                $keyFieldCrm = array_search($keyFieldFile, array_keys($this->fieldsCrm));
+                $orderCrm[$keyFieldCrm] = $field;
+            }
+        }
+        return $orderCrm;
     }
 
     /**
@@ -103,11 +134,4 @@ Class SendRequest
     {
         return $this->table;
     }
-
-    //формировать каждую строку как отдельный заказ перед отправкой
-    //лучше использовать upload и формировать до 50 заказов для этого запроса
-    //взять таблицу, взять отдельный элемент в строке, получить его индекс
-    //получить индекс поля из файла, к которому относится это поле (в какой колонке поле, в такой и название)
-    //получить символьный код поля из CRM под этим индексом после выставления соответствия
-    //при формировании массива для отправки выставить [поле срм]=>[значение из таблицы]
 }
