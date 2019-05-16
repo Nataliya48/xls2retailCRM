@@ -149,7 +149,7 @@ class SendRequest
     private function addItemsToOrder($fieldExplode, $fieldFile)
     {
         if ($fieldExplode[1] === 'externalId'){
-            return $this->essenceCrm[$fieldExplode[0]] = [['offer' => ['externalId' => $fieldFile]]];
+            return $this->essenceCrm[$fieldExplode[0]][] = ['offer' => ['externalId' => $fieldFile]];
         } elseif ($fieldExplode[1] === 'name') {
             return $this->essenceCrm[$fieldExplode[0]] = [['name' => $fieldFile]];
         }
@@ -164,19 +164,24 @@ class SendRequest
      */
     private function addPaymentToOrder($fieldExplode, $fieldFile)
     {
+        $payment = [];
         if ($fieldExplode[1] === 'type'){
             foreach ($this->getListPaymentCode() as $code => $payment){
-                if ($payment === $fieldFile){
-                    return $this->essenceCrm[$fieldExplode[0]] = [['type' => $code]];
-                }
-            }
-        } elseif ($fieldExplode[1] === 'status') {
-            foreach ($this->getListPaymentStatus() as $code => $status){
-                if ($status === $fieldFile) {
-                    return $this->essenceCrm[$fieldExplode[0]] = [['status' => $code]];
+                if ($payment === $fieldFile and $code != null){
+                    //return $this->essenceCrm[$fieldExplode[0]][] = ['type' => $code];
+                    $payment['type'] = $code;
                 }
             }
         }
+        if ($fieldExplode[1] === 'status') {
+            foreach ($this->getListPaymentStatus() as $code => $status){
+                if ($status === $fieldFile and $code != null) {
+                    //return $this->essenceCrm[$fieldExplode[0]] = [['status' => $code]];
+                    $payment['status'] = $code;
+                }
+            }
+        }
+        return $this->essenceCrm[$fieldExplode[0]] = $payment;
     }
 
     /**
