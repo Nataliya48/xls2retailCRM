@@ -122,7 +122,7 @@ class SendRequest
             if (strpos($this->fieldsCrm[$keyFieldCrm], '.')){
                 $fieldExplode = explode('.', $this->fieldsCrm[$keyFieldCrm]);
                 if ($fieldExplode[0] === 'items') {
-                    $this->addItemsToOrer($fieldExplode, $fieldFile);
+                    $this->addItemsToOrder($fieldExplode, $fieldFile);
                 } elseif ($fieldExplode[0] === 'payments') {
                     $this->addPaymentToOrder($fieldExplode, $fieldFile);
                 } else {
@@ -146,12 +146,12 @@ class SendRequest
      * @param $fieldFile значение для записи
      * @return array
      */
-    private function addItemsToOrer($fieldExplode, $fieldFile)
+    private function addItemsToOrder($fieldExplode, $fieldFile)
     {
         if ($fieldExplode[1] === 'externalId'){
-            return $this->essenceCrm[$fieldExplode[0]][] = ['offer' => ['externalId' => $fieldFile]];
+            return $this->essenceCrm[$fieldExplode[0]] = [['offer' => ['externalId' => $fieldFile]]];
         } elseif ($fieldExplode[1] === 'name') {
-            return $this->essenceCrm[$fieldExplode[0]][] = [['name' => $fieldFile]];
+            return $this->essenceCrm[$fieldExplode[0]] = [['name' => $fieldFile]];
         }
     }
 
@@ -167,13 +167,13 @@ class SendRequest
         if ($fieldExplode[1] === 'type'){
             foreach ($this->getListPaymentCode() as $code => $payment){
                 if ($payment === $fieldFile){
-                    $this->essenceCrm[$fieldExplode[0]][] = [['type' => $code]];
+                    return $this->essenceCrm[$fieldExplode[0]] = [['type' => $code]];
                 }
             }
         } elseif ($fieldExplode[1] === 'status') {
             foreach ($this->getListPaymentStatus() as $code => $status){
                 if ($status === $fieldFile) {
-                    return $this->essenceCrm[$fieldExplode[0]][] = [['status' => $code]];
+                    return $this->essenceCrm[$fieldExplode[0]] = [['status' => $code]];
                 }
             }
         }
