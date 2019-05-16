@@ -1,5 +1,4 @@
 <?php session_start();?>
-<?php $mapping = $_SESSION['mapping']; ?>
 <?php $assemblyOrder = $_SESSION['assemblyOrder']; ?>
 <html>
 <head>

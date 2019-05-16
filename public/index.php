@@ -42,7 +42,6 @@ try {
                     $_SESSION['type'],
                     $_SESSION['site']
                 );
-                $_SESSION['mapping'] = $mapping;
                 $assemblyOrder = $request->assemblyOrder();
                 $_SESSION['assemblyOrder'] = $assemblyOrder;
                 require_once("../src/templateFinal.php");
