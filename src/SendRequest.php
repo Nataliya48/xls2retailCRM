@@ -54,6 +54,13 @@ class SendRequest
     private $essenceCrm;
 
     /**
+     * Массив оплаты
+     *
+     * @var array
+     */
+    private $payment;
+
+    /**
      * Подключение к CRM
      *
      * @param $urlCrm адрес CRM
@@ -104,6 +111,8 @@ class SendRequest
     {
         $assemblyOrderCrm = [];
         foreach ($this->table as $order){
+            unset($this->essenceCrm);
+            unset($this->payment);
             $assemblyOrderCrm[] = $this->addValuesToFields($order);
         }
         return $assemblyOrderCrm;
@@ -118,6 +127,9 @@ class SendRequest
     private function addValuesToFields($order)
     {
         foreach ($order as $keyFieldFile => $fieldFile){
+            if ($fieldFile === null){
+                continue;
+            }
             $keyFieldCrm = array_search($keyFieldFile, array_keys($this->fieldsCrm));
             if (strpos($this->fieldsCrm[$keyFieldCrm], '.')){
                 $fieldExplode = explode('.', $this->fieldsCrm[$keyFieldCrm]);
@@ -135,6 +147,7 @@ class SendRequest
             } else {
                 $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $fieldFile;
             }
+            $this->essenceCrm['payments'] = [$this->payment];
         }
         return $this->essenceCrm;
     }
@@ -151,7 +164,7 @@ class SendRequest
         if ($fieldExplode[1] === 'externalId'){
             return $this->essenceCrm[$fieldExplode[0]][] = ['offer' => ['externalId' => $fieldFile]];
         } elseif ($fieldExplode[1] === 'name') {
-            return $this->essenceCrm[$fieldExplode[0]] = [['name' => $fieldFile]];
+            return $this->essenceCrm[$fieldExplode[0]][] = ['productName' => $fieldFile];
         }
     }
 
@@ -164,24 +177,21 @@ class SendRequest
      */
     private function addPaymentToOrder($fieldExplode, $fieldFile)
     {
-        $payment = [];
+        //$payments = [];
         if ($fieldExplode[1] === 'type'){
             foreach ($this->getListPaymentCode() as $code => $payment){
                 if ($payment === $fieldFile and $code != null){
-                    //return $this->essenceCrm[$fieldExplode[0]][] = ['type' => $code];
-                    $payment['type'] = $code;
+                    return $this->payment['type'] = $code;
                 }
             }
         }
         if ($fieldExplode[1] === 'status') {
             foreach ($this->getListPaymentStatus() as $code => $status){
                 if ($status === $fieldFile and $code != null) {
-                    //return $this->essenceCrm[$fieldExplode[0]] = [['status' => $code]];
-                    $payment['status'] = $code;
+                    return $this->payment['status'] = $code;
                 }
             }
         }
-        return $this->essenceCrm[$fieldExplode[0]] = $payment;
     }
 
     /**
@@ -209,11 +219,12 @@ class SendRequest
     {
         try {
             $response = $this->connectionToCrm()->request->ordersUpload($portion, $this->site);
+            $this->writeLogAssemblyOrder('ordersUpload', $response, $portion);
         } catch (\RetailCrm\Exception\CurlException $e) {
             throw new Exception('Connection error: ' . $e->getMessage());
         }
         if (!$response->isSuccessful()) {
-            $this->writeLog('ordersUpload', $response);
+            $this->writeLogError('ordersUpload', $response);
         }
     }
 
@@ -235,7 +246,7 @@ class SendRequest
                 $statusCodeList[$status['code']] = $status['name'];
             }
         } else {
-            $this->writeLog('statusesList', $response);
+            $this->writeLogError('statusesList', $response);
         }
         return $statusCodeList;
     }
@@ -258,7 +269,7 @@ class SendRequest
                 $paymentCodeList[$payment['code']] = $payment['name'];
             }
         } else {
-            $this->writeLog('paymentTypesList', $response);
+            $this->writeLogError('paymentTypesList', $response);
         }
         return $paymentCodeList;
     }
@@ -281,7 +292,7 @@ class SendRequest
                 $paymentStatusCodeList[$status['code']] = $status['name'];
             }
         } else {
-            $this->writeLog('paymentStatusesList', $response);
+            $this->writeLogError('paymentStatusesList', $response);
         }
         return $paymentStatusCodeList;
     }
@@ -292,14 +303,24 @@ class SendRequest
      * @param $method API метод
      * @param $response запрос
      */
-    private function writeLog($method, $response)
+    private function writeLogError($method, $response)
     {
         file_put_contents(realpath(__DIR__ . '/../logs/error.log'), json_encode([
             'date' => date('Y-m-d H:i:s'),
             'method' => $method,
             'code' => $response->getStatusCode(),
             'msg' => $response->getErrorMsg(),
-            'error' => isset($response['errorMsg']) ? $response['errorMsg'] : 'not errors'
+            'error' => isset($response['errors']) ? $response['errors'] : 'not errors'
+        ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), FILE_APPEND);
+    }
+
+    private function writeLogAssemblyOrder($method, $response, $order)
+    {
+        file_put_contents(realpath(__DIR__ . '/../logs/assemblyOrder.log'), json_encode([
+            'date' => date('Y-m-d H:i:s'),
+            'method' => $method,
+            'code' => $response->getStatusCode(),
+            'orders' => $order
         ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), FILE_APPEND);
     }
 }
