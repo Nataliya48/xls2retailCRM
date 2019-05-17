@@ -147,7 +147,9 @@ class SendRequest
             } else {
                 $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $fieldFile;
             }
-            $this->essenceCrm['payments'] = [$this->payment];
+            if ($this->payment !== null) {
+                $this->essenceCrm['payments'] = [$this->payment];
+            }
         }
         return $this->essenceCrm;
     }
@@ -208,6 +210,11 @@ class SendRequest
                 return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $code;
             }
         }
+    }
+
+    private function addDeliveryToOrder()
+    {
+
     }
 
     /**
@@ -295,6 +302,24 @@ class SendRequest
             $this->writeLogError('paymentStatusesList', $response);
         }
         return $paymentStatusCodeList;
+    }
+
+    private function getListDeliveryCode()
+    {
+        try {
+            $response = $this->connectionToCrm()->request->deliveryTypesList();
+        } catch (\RetailCrm\Exception\CurlException $e) {
+            throw new Exception('Connection error: ' . $e->getMessage());
+        }
+        $deliveryCodeList = [];
+        if ($response->isSuccessful()) {
+            foreach ($response->deliveryTypes as $delivery){
+                $deliveryCodeList[$delivery['code']] = $delivery['name'];
+            }
+        } else {
+            $this->writeLogError('deliveryTypesList', $response);
+        }
+        return $deliveryCodeList;
     }
 
     /**
