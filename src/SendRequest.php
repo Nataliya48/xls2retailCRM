@@ -2,6 +2,8 @@
 
 namespace Export;
 
+use Carbon\Carbon;
+
 class SendRequest
 {
     /**
@@ -146,6 +148,8 @@ class SendRequest
                 }
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'status') {
                 $this->addStatusToOrder($keyFieldCrm, $fieldFile);
+            } elseif ($this->fieldsCrm[$keyFieldCrm] === 'createdAt') {
+                $this->addDateCreatedToOrder($keyFieldCrm, $fieldFile);
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'null'){
                 continue;
             } else {
@@ -241,6 +245,30 @@ class SendRequest
                 return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $code;
             }
         }
+    }
+
+    /**
+     * Добавление даты создания заказа в массив заказа
+     *
+     * @param $keyFieldCrm ключ поля CRM
+     * @param $fieldFile значение для записи
+     * @return bool|\DateTime
+     */
+    private function addDateCreatedToOrder($keyFieldCrm, $fieldFile)
+    {
+        if (preg_match("/\d{2}\.\d{2}\.\d{4}\s\d{2}:\d{2}:\d{2}/", $fieldFile)){ //01.02.2018 00:00:00
+            $date = Carbon::createFromFormat('d.m.Y H:i:s', $fieldFile);
+        } elseif (preg_match("/^\d{2}\.\d{2}\.\d{4}$/", $fieldFile)){ //03.07.2018
+            $date = Carbon::createFromFormat('d.m.Y', $fieldFile);
+        } elseif (preg_match("/^\d{2}\.\d{2}\.\d{2}\s\d{2}:\d{2}$/", $fieldFile)){ //06.01.18 00:00
+            $date = Carbon::createFromFormat('d.m.y H:i', $fieldFile);
+        } elseif (preg_match("/^\d{4}-\d{2}-\d{2}$/", $fieldFile)){ //2018-03-11
+            $date = Carbon::createFromFormat('Y-m-d', $fieldFile);
+        } elseif (preg_match("/^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}$/", $fieldFile)){ //2018-03-11 00:00:00
+            $date = Carbon::createFromFormat('Y-m-d H:i:s', $fieldFile);
+        }
+        $date->format('Y-m-d H:i:s');
+        return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $date;
     }
 
     /**

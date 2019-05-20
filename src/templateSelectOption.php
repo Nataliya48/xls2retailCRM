@@ -12,27 +12,44 @@
 </header>
 
 <p class="head"></p>
-<div>
-    <form method="post" class="form" action="index.php?action=connect">
-        <p>Что загружаем: </p>
-        <p><select size="1" name="type">
-                <option disabled>Что загружаем</option>
-                <option value="orders">Заказы</option>
-                <option value="customers">Клиенты</option>
-            </select></p>
+    <form method="post" class="formMapp" action="index.php?action=connect">
+        <p class="load">Выставите соответствие для магазина и сущности, которую требуется загрузить в retailCRM, из списков. </p>
+        <table border="0" width="100%" cellpadding="5">
 
-        <p>Выберите магазин: </p>
-        <?php if (!empty($sites)): ?>
-        <p><select size="1" name="site">
-                <option disabled>Выберите магазин</option>
-                <?php foreach ($sites as $code => $name): ?>
-                    <option value="<?= $code ?>"><?= $name ?></option>
-                <?php endforeach; ?>
-            </select></p>
-        <?php endif; ?>
+            <tr>
+                <td width="50%" align="right">
+                    Что загружаем:
+                </td>
+                <td width="50%">
+                    <select size="1" name="type">
+                        <option disabled>Что загружаем</option>
+                        <option value="orders">Заказы</option>
+                        <option value="customers">Клиенты</option>
+                    </select>
+                </td>
+
+            <tr>
+            <tr>
+                <td width="50%" align="right">
+                    Выберите магазин:
+                </td>
+                <td width="50%">
+                    <?php if (!empty($sites)): ?>
+                        <select size="1" name="site">
+                                <option disabled>Выберите магазин</option>
+                                <?php foreach ($sites as $code => $name): ?>
+                                    <option value="<?= $code ?>"><?= $name ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                    <?php endif; ?>
+                </td>
+
+            <tr>
+
+        </table>
+
         <p><input type="submit" value="Отправить"></p>
     </form>
-</div>
 
 <?php
 if (isset($errorMsg)):
