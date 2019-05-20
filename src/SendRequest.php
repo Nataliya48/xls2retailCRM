@@ -137,6 +137,10 @@ class SendRequest
                     $this->addItemsToOrder($fieldExplode, $fieldFile);
                 } elseif ($fieldExplode[0] === 'payments') {
                     $this->addPaymentToOrder($fieldExplode, $fieldFile);
+                } elseif ($fieldExplode[0] === 'delivery') {
+                    $this->addDeliveryToOrder($fieldExplode, $fieldFile);
+                } elseif ($fieldExplode[0] === 'customer'){
+                    $this->addCustomerToOrder($fieldExplode, $fieldFile);
                 } else {
                     $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
                 }
@@ -179,7 +183,6 @@ class SendRequest
      */
     private function addPaymentToOrder($fieldExplode, $fieldFile)
     {
-        //$payments = [];
         if ($fieldExplode[1] === 'type'){
             foreach ($this->getListPaymentCode() as $code => $payment){
                 if ($payment === $fieldFile and $code != null){
@@ -197,6 +200,34 @@ class SendRequest
     }
 
     /**
+     * Добавление доставки в массив заказа
+     *
+     * @param $fieldExplode поля CRM
+     * @param $fieldFile значение для записи
+     * @return int|string
+     */
+    private function addDeliveryToOrder($fieldExplode, $fieldFile)
+    {
+        foreach ($this->getListDeliveryCode() as $code => $delivery) {
+            if ($delivery === $fieldFile) {
+                return $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $code];
+            }
+        }
+    }
+
+    /**
+     * Добавление клиента в массив заказа
+     *
+     * @param $fieldExplode поля CRM
+     * @param $fieldFile значение для записи
+     * @return array
+     */
+    private function addCustomerToOrder($fieldExplode, $fieldFile)
+    {
+        return $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
+    }
+
+    /**
      * Добавление статуса в массив заказа
      *
      * @param $keyFieldCrm ключ поля CRM
@@ -210,11 +241,6 @@ class SendRequest
                 return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $code;
             }
         }
-    }
-
-    private function addDeliveryToOrder()
-    {
-
     }
 
     /**
@@ -304,6 +330,11 @@ class SendRequest
         return $paymentStatusCodeList;
     }
 
+    /**
+     * Получить список символьных кодов типов доставок из CRM
+     *
+     * @return array
+     */
     private function getListDeliveryCode()
     {
         try {
