@@ -23,6 +23,10 @@ form.form {
     height: 50%;
 }
 
+form.formMapp {
+    margin: 25px 10% 25px 10%;
+}
+
 body {
     background-color: #ffffe0;
 }

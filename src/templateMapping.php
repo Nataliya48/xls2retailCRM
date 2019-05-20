@@ -17,18 +17,18 @@
 
 <p class="head"></p>
 
-<div>
-    <form method="post" class="form" action="index.php?action=mapping">
-    <table border="1" width="100%" cellpadding="5">
+    <form method="post" class="formMapp" action="index.php?action=mapping">
+        <p class="load">Выставите соответствие для полей из загруженного файла, для полей из retaiLCRM (в какие поля требуется загрузить информацию).</p>
+    <table border="0" width="100%" cellpadding="5">
         <tr>
-            <th width="50%">Поля из файла</th>
-            <th width="50%">Поля из retailCRM</th>
+            <th width="50%" align="right">Поля из файла</th>
+            <th width="50%" align="left">Поля из retailCRM</th>
         </tr>
         <?php if (!empty($fieldsFileLoad)):  ?>
         <?php foreach ($fieldsFileLoad as $field): ?>
         <tr>
 
-            <td width="50%"><input type="hidden" name="file[]" value="<?= $field ?>"><?= $field ?></td>
+            <td width="50%" align="right"><input type="hidden" name="file[]" value="<?= $field ?>"><?= $field ?></td>
 
             <td width="50%">
                 <select size="1" name="crm[]">
@@ -51,7 +51,6 @@
     </table>
         <p><input type="submit" value="Отправить"></p>
     </form>
-</div>
 
 <?php
 if (isset($errorMsg)):
