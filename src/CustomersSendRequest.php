@@ -137,12 +137,16 @@ class CustomersSendRequest
             $keyFieldCrm = array_search($keyFieldFile, array_keys($this->fieldsCrm));
             if (strpos($this->fieldsCrm[$keyFieldCrm], '.')){
                 $fieldExplode = explode('.', $this->fieldsCrm[$keyFieldCrm]);
-                if ($fieldExplode[0] === 'phones') {
-                    $this->addPhonesToCustomer($fieldExplode, $fieldFile);
-                } elseif ($fieldExplode[0] === 'contragent'){
-                    $this->addContragentToCustomer($fieldExplode, $fieldFile);
-                } else {
-                    $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
+                switch ($fieldExplode[0]) {
+                    case "phones" :
+                        $this->addPhonesToCustomer($fieldExplode, $fieldFile);
+                        break;
+                    case "contragent" :
+                        $this->addContragentToCustomer($fieldExplode, $fieldFile);
+                        break;
+                    default:
+                        $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
+                        break;
                 }
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'null'){
                 continue;
