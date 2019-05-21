@@ -76,6 +76,9 @@ class LoadFile
             $line = [];
             foreach ($row->getCellIterator() as $cell) {
                 $line[] = $cell->getValue();
+                /*if(PHPExcel_Shared_Date::isDateTime($cell)) {
+                    $line[] = date('Y-m-d H:i:s',PHPExcel_Shared_Date::ExcelToPHP($worksheet->getCellByColumnAndRow($row, $cell)->getValue()));
+                }*/
             }
             $table[] = $line;
         }

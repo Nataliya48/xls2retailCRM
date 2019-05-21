@@ -6,7 +6,8 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Export\LoadFile;
 use Export\ConnectCrm;
-use Export\SendRequest;
+use Export\OrdersSendRequest;
+use Export\CustomersSendRequest;
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -25,15 +26,15 @@ try {
                 $_SESSION['listFieldsCrm'] = $listFieldsCrm;
                 $_SESSION['fieldsFileLoad'] = $fieldsFileLoad;
                 $_SESSION['customFields'] = $customFields;
-                require_once("../src/templateSelectOption.php");
+                require_once("../src/template/templateSelectOption.php");
                 break;
             case "connect" :
-                require_once("../src/templateMapping.php");
+                require_once("../src/template/templateMapping.php");
                 $_SESSION['type'] = $_POST['type'];
                 $_SESSION['site'] = $_POST['site'];
                 break;
             case "mapping" :
-                $request = new SendRequest(
+                $request = new OrdersSendRequest(
                     $_SESSION['url'],
                     $_SESSION['apiKey'],
                     $_SESSION['table'],
@@ -44,14 +45,15 @@ try {
                 );
                 $assemblyOrder = $request->assemblyOrder();
                 $_SESSION['assemblyOrder'] = $assemblyOrder;
-                require_once("../src/templateFinal.php");
+                $_SESSION['errorMassage'] = $request->errorMassage();
+                require_once("../src/template/templateFinal.php");
                 break;
             default :
-                require_once("../src/template404.php");
+                require_once("../src/template/template404.php");
                 break;
         }
     } else {
-        require_once('../src/templateLoadFile.php');
+        require_once('../src/template/templateLoadFile.php');
     }
 } catch (Exception $e) {
     $errorMsg = 'Выброшено исключение: ' . $e->getMessage() . "\n";

@@ -12,7 +12,7 @@
 
 <p class="head"></p>
 
-<div>
+<div class="first">
     <form enctype="multipart/form-data" method="post" class="form" action="index.php?action=load">
         <p class="load">Загрузите файл в формате *.xls(x) или *.csv</p>
         <p class="load">Файл в формате CSV должен иметь кодировку utf8 с разделителем колонок ";" (точка с запятой).</p>

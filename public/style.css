@@ -4,7 +4,7 @@ h1.header-title {
     margin: 25px 10% 25px 10%;
 }
 
-div {
+div.first {
     border: 4px dashed #b3b3b3;
     border-radius: 10px;
     margin: 0 10% 10px 10%;
@@ -24,6 +24,10 @@ form.form {
 }
 
 form.formMapp {
+    margin: 25px 10% 25px 10%;
+}
+
+div.err {
     margin: 25px 10% 25px 10%;
 }
 

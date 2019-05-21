@@ -4,7 +4,7 @@ namespace Export;
 
 use Carbon\Carbon;
 
-class SendRequest
+class OrdersSendRequest
 {
     /**
      * Массив заказов
@@ -63,6 +63,13 @@ class SendRequest
     private $payment;
 
     /**
+     * Запрос для отправки заказов в CRM
+     *
+     * @var array
+     */
+    private $responce;
+
+    /**
      * Подключение к CRM
      *
      * @param $urlCrm адрес CRM
@@ -81,9 +88,13 @@ class SendRequest
 
     /**
      * SendRequest constructor.
-     * @param $urlCrm адрес CRM
-     * @param $apiKey ключ API
-     * @throws Exception
+     * @param $url адрес CRM
+     * @param $apiKey API ключ
+     * @param $table массив заказов
+     * @param $fieldsCrm поля из CRM
+     * @param $fieldsFile поля из загруженного файла
+     * @param $type тип загружаемых данных
+     * @param $site сайт CRM
      */
     public function __construct($url, $apiKey, $table, $fieldsCrm, $fieldsFile, $type, $site)
     {
@@ -135,21 +146,28 @@ class SendRequest
             $keyFieldCrm = array_search($keyFieldFile, array_keys($this->fieldsCrm));
             if (strpos($this->fieldsCrm[$keyFieldCrm], '.')){
                 $fieldExplode = explode('.', $this->fieldsCrm[$keyFieldCrm]);
-                if ($fieldExplode[0] === 'items') {
-                    $this->addItemsToOrder($fieldExplode, $fieldFile);
-                } elseif ($fieldExplode[0] === 'payments') {
-                    $this->addPaymentToOrder($fieldExplode, $fieldFile);
-                } elseif ($fieldExplode[0] === 'delivery') {
-                    $this->addDeliveryToOrder($fieldExplode, $fieldFile);
-                } elseif ($fieldExplode[0] === 'customer'){
-                    $this->addCustomerToOrder($fieldExplode, $fieldFile);
-                } else {
-                    $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
+                switch ($fieldExplode[0]) {
+                    case "items" :
+                        $this->addItemsToOrder($fieldExplode, $fieldFile);
+                        break;
+                    case "payments" :
+                        $this->addPaymentToOrder($fieldExplode, $fieldFile);
+                        break;
+                    case "delivery" :
+                        $this->addDeliveryToOrder($fieldExplode, $fieldFile);
+                        break;
+                    case "customer" :
+                        $this->addCustomerToOrder($fieldExplode, $fieldFile);
+                        break;
+                    default:
+                        $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
+                        break;
                 }
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'status') {
                 $this->addStatusToOrder($keyFieldCrm, $fieldFile);
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'createdAt') {
-                $this->addDateCreatedToOrder($keyFieldCrm, $fieldFile);
+                //$this->addDateCreatedToOrder($keyFieldCrm, $fieldFile);
+                $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $fieldFile;
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'null'){
                 continue;
             } else {
@@ -172,9 +190,9 @@ class SendRequest
     private function addItemsToOrder($fieldExplode, $fieldFile)
     {
         if ($fieldExplode[1] === 'externalId'){
-            return $this->essenceCrm[$fieldExplode[0]][] = ['offer' => ['externalId' => $fieldFile]];
-        } elseif ($fieldExplode[1] === 'name') {
-            return $this->essenceCrm[$fieldExplode[0]][] = ['productName' => $fieldFile];
+            return $this->essenceCrm[$fieldExplode[0]][] = ['offer' => [$fieldExplode[1] => $fieldFile]];
+        } elseif ($fieldExplode[1] === 'productName') {
+            return $this->essenceCrm[$fieldExplode[0]][] = [$fieldExplode[1] => $fieldFile];
         }
     }
 
@@ -190,14 +208,14 @@ class SendRequest
         if ($fieldExplode[1] === 'type'){
             foreach ($this->getListPaymentCode() as $code => $payment){
                 if ($payment === $fieldFile and $code != null){
-                    return $this->payment['type'] = $code;
+                    return $this->payment[$fieldExplode[1]] = $code;
                 }
             }
         }
         if ($fieldExplode[1] === 'status') {
             foreach ($this->getListPaymentStatus() as $code => $status){
                 if ($status === $fieldFile and $code != null) {
-                    return $this->payment['status'] = $code;
+                    return $this->payment[$fieldExplode[1]] = $code;
                 }
             }
         }
@@ -266,9 +284,11 @@ class SendRequest
             $date = Carbon::createFromFormat('Y-m-d', $fieldFile);
         } elseif (preg_match("/^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}$/", $fieldFile)){ //2018-03-11 00:00:00
             $date = Carbon::createFromFormat('Y-m-d H:i:s', $fieldFile);
+        } else {
+            return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $fieldFile;
         }
         $date->format('Y-m-d H:i:s');
-        return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $date;
+        return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $date['date'];
     }
 
     /**
@@ -279,13 +299,13 @@ class SendRequest
     private function createOrders($portion)
     {
         try {
-            $response = $this->connectionToCrm()->request->ordersUpload($portion, $this->site);
-            $this->writeLogAssemblyOrder('ordersUpload', $response, $portion);
+            $this->responce = $this->connectionToCrm()->request->ordersUpload($portion, $this->site);
+            $this->writeLogAssemblyOrder('ordersUpload', $this->responce, $portion);
         } catch (\RetailCrm\Exception\CurlException $e) {
             throw new Exception('Connection error: ' . $e->getMessage());
         }
-        if (!$response->isSuccessful()) {
-            $this->writeLogError('ordersUpload', $response);
+        if (!$this->responce->isSuccessful()) {
+            $this->writeLogError('ordersUpload', $this->responce);
         }
     }
 
@@ -398,6 +418,22 @@ class SendRequest
         ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), FILE_APPEND);
     }
 
+    /**
+     * @param $response
+     * @return mixed
+     */
+    public function errorMassage()
+    {
+        return !empty($this->responce['errors']) ? $this->responce['errors'] : null;
+    }
+
+    /**
+     * Запись в лог-файл сформированный массив API запроса
+     *
+     * @param $method API метод
+     * @param $response запрос
+     * @param $order массив заказа
+     */
     private function writeLogAssemblyOrder($method, $response, $order)
     {
         file_put_contents(realpath(__DIR__ . '/../logs/assemblyOrder.log'), json_encode([
