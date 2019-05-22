@@ -16,14 +16,19 @@
 <p class="head"></p>
 
 <div class="err">
+    <form method="post" class="formMapp" action="index.php?action=start">
     <?php if ($errorMassage !== null): ?>
         <p class="load">Во время загрузки возникли следующие ошибки:</p><br>
         <?php foreach ($errorMassage as $massage): ?>
             <p><?php echo $massage ?></p>
         <?php endforeach; ?>
+        <br>
     <?php else: ?>
         <p class="load">Загрузка успешно завершена.</p>
     <?php endif; ?>
+        <p class="load">Выполнить повторную загрузку?</p>
+        <p><input type="submit" value="Вернуться"></p>
+    </form>
 </div>
 
 <?php
