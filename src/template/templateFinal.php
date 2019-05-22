@@ -17,7 +17,7 @@
 
 <div class="err">
     <?php if ($errorMassage !== null): ?>
-        <p class="load">Во время загрузки возникли следующие ошибки (скачать лог ошибок).</p>
+        <p class="load">Во время загрузки возникли следующие ошибки:</p><br>
         <?php foreach ($errorMassage as $massage): ?>
             <p><?php echo $massage ?></p>
         <?php endforeach; ?>
