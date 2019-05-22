@@ -47,7 +47,7 @@ endif;
 ?>
 
 <footer class="footer">
-    <p class="foot">©Nataliya</p>
+    <p class="foot">©Nataliya <a href="templateDocumentation.php">Документация</a></p>
 </footer>
 
 </body>

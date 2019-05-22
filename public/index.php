@@ -44,6 +44,9 @@ try {
                 );
                 require_once("../src/template/templateFinal.php");
                 break;
+            case "docs":
+                require_once("../src/template/templateDocumentation.php");
+                break;
             default :
                 require_once("../src/template/template404.php");
                 break;
