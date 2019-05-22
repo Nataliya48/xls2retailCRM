@@ -200,16 +200,11 @@ class CustomersSendRequest
     /**
      * Список ошибок при загрузке для печати
      *
-     * @param $response запрос
      * @return mixed
      */
     public function errorMsgForPrint()
     {
-        $file = 'errors' . date('Y-m-d H:i:s');
-        file_put_contents(realpath(__DIR__ . '/../logs/' . $file . '.log'), json_encode([
-            'date' => date('Y-m-d H:i:s'),
-            'errors' => !empty($this->responce['errors']) ? $this->responce['errors'] : null
-        ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), FILE_APPEND);
+        return !empty($this->responce['errors']) ? $this->responce['errors'] : null;
     }
 
     /**
