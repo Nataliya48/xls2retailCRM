@@ -91,7 +91,6 @@ class CustomersSendRequest
     {
         $this->url = $url;
         $this->apiKey = $apiKey;
-        unset($table[0]);
         $this->table = $table;
         $this->fieldsCrm = $fieldsCrm;
         $this->fieldsFile = $fieldsFile;
@@ -135,16 +134,10 @@ class CustomersSendRequest
             $keyFieldCrm = array_search($keyFieldFile, array_keys($this->fieldsCrm));
             if (strpos($this->fieldsCrm[$keyFieldCrm], '.')){
                 $fieldExplode = explode('.', $this->fieldsCrm[$keyFieldCrm]);
-                switch ($fieldExplode[0]) {
-                    case "phones" :
-                        $this->addPhonesToCustomer($fieldExplode, $fieldFile);
-                        break;
-                    case "contragent" :
-                        $this->addContragentToCustomer($fieldExplode, $fieldFile);
-                        break;
-                    default:
-                        $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
-                        break;
+                if ($fieldExplode[0] === 'phones') {
+                    $this->addPhonesToCustomer($fieldExplode, $fieldFile);
+                } else {
+                    $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
                 }
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'null'){
                 continue;
@@ -167,18 +160,6 @@ class CustomersSendRequest
         if ($fieldExplode[1] === 'number'){
             return $this->essenceCrm[$fieldExplode[0]][] = ['number' => $fieldFile];
         }
-    }
-
-    /**
-     * Добавление данных контрагентов в массив клиента
-     *
-     * @param $fieldExplode поля CRM
-     * @param $fieldFile значение для записи
-     * @return array
-     */
-    private function addContragentToCustomer($fieldExplode, $fieldFile)
-    {
-        return $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
     }
 
     /**
@@ -217,12 +198,18 @@ class CustomersSendRequest
     }
 
     /**
-     * @param $response
+     * Список ошибок при загрузке для печати
+     *
+     * @param $response запрос
      * @return mixed
      */
-    public function errorMassage()
+    public function errorMsgForPrint()
     {
-        return !empty($this->responce['errors']) ? $this->responce['errors'] : null;
+        $file = 'errors' . date('Y-m-d H:i:s');
+        file_put_contents(realpath(__DIR__ . '/../logs/' . $file . '.log'), json_encode([
+            'date' => date('Y-m-d H:i:s'),
+            'errors' => !empty($this->responce['errors']) ? $this->responce['errors'] : null
+        ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), FILE_APPEND);
     }
 
     /**

@@ -21,7 +21,7 @@ class Query
                     $fieldsFile,
                     $site
                 );
-                $_SESSION['errorMassage'] = $request->errorMassage();
+                $_SESSION['errorMassage'] = $request->errorMsgForPrint();
                 break;
             case 'customers':
                 $request = new CustomersSendRequest(
@@ -32,7 +32,7 @@ class Query
                     $fieldsFile,
                     $site
                 );
-                $_SESSION['errorMassage'] = $request->errorMassage();
+                $_SESSION['errorMassage'] = $request->errorMsgForPrint();
                 break;
         }
     }

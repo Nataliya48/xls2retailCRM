@@ -100,7 +100,6 @@ class OrdersSendRequest
     {
         $this->url = $url;
         $this->apiKey = $apiKey;
-        unset($table[0]);
         $this->table = $table;
         $this->fieldsCrm = $fieldsCrm;
         $this->fieldsFile = $fieldsFile;
@@ -152,11 +151,10 @@ class OrdersSendRequest
                         $this->addPaymentToOrder($fieldExplode, $fieldFile);
                         break;
                     case "delivery" :
-                        $this->addDeliveryToOrder($fieldExplode, $fieldFile);
+                        $this->addDeliveryTypeToOrder($fieldExplode, $fieldFile);
                         break;
-                    case "customer" :
-                        $this->addCustomerToOrder($fieldExplode, $fieldFile);
-                        break;
+                    case "address":
+                        $this->addAddressDeliveryToOrder($fieldExplode, $fieldFile);
                     default:
                         $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
                         break;
@@ -171,7 +169,7 @@ class OrdersSendRequest
             } else {
                 $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $fieldFile;
             }
-            if ($this->payment !== null) {
+            if ($this->payment['type'] !== null) {
                 $this->essenceCrm['payments'] = [$this->payment];
             }
         }
@@ -205,14 +203,14 @@ class OrdersSendRequest
     {
         if ($fieldExplode[1] === 'type'){
             foreach ($this->getListPaymentCode() as $code => $payment){
-                if ($payment === $fieldFile and $code != null){
+                if ($payment === $fieldFile){
                     return $this->payment[$fieldExplode[1]] = $code;
                 }
             }
         }
-        if ($fieldExplode[1] === 'status') {
+        if ($fieldExplode[1] === 'status' && $this->payment['type'] !== null) {
             foreach ($this->getListPaymentStatus() as $code => $status){
-                if ($status === $fieldFile and $code != null) {
+                if ($status === $fieldFile) {
                     return $this->payment[$fieldExplode[1]] = $code;
                 }
             }
@@ -226,25 +224,13 @@ class OrdersSendRequest
      * @param $fieldFile значение для записи
      * @return int|string
      */
-    private function addDeliveryToOrder($fieldExplode, $fieldFile)
+    private function addDeliveryTypeToOrder($fieldExplode, $fieldFile)
     {
         foreach ($this->getListDeliveryCode() as $code => $delivery) {
             if ($delivery === $fieldFile) {
                 return $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $code];
             }
         }
-    }
-
-    /**
-     * Добавление клиента в массив заказа
-     *
-     * @param $fieldExplode поля CRM
-     * @param $fieldFile значение для записи
-     * @return array
-     */
-    private function addCustomerToOrder($fieldExplode, $fieldFile)
-    {
-        return $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
     }
 
     /**
@@ -259,6 +245,24 @@ class OrdersSendRequest
         foreach ($this->getListStatusCode() as $code => $status){
             if ($status === $fieldFile){
                 return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $code;
+            }
+        }
+    }
+
+    /**
+     * Добавление адреса доставки в массив заказа
+     *
+     * @param $fieldExplode поля CRM
+     * @param $fieldFile значение для записи
+     * @return array
+     */
+    private function addAddressDeliveryToOrder($fieldExplode, $fieldFile)
+    {
+        if ($fieldExplode[1] === 'text'){
+            foreach ($this->getListPaymentCode() as $code => $payment){
+                if ($payment === $fieldFile and $code != null){
+                    return $this->payment['delivery'] = [$fieldExplode[1] => $code];
+                }
             }
         }
     }
@@ -417,12 +421,19 @@ class OrdersSendRequest
     }
 
     /**
-     * @param $response
+     * Список ошибок при загрузке для печати
+     *
+     * @param $response запрос
      * @return mixed
      */
-    public function errorMassage()
+    public function errorMsgForPrint()
     {
-        return !empty($this->responce['errors']) ? $this->responce['errors'] : null;
+        $file = 'errors' . date('Y-m-d H:i:s') . '.log';
+        file_put_contents(realpath(__DIR__ . '/../logs/' . $file), json_encode([
+            'date' => date('Y-m-d H:i:s'),
+            'errors' => !empty($this->responce['errors']) ? $this->responce['errors'] : null
+        ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), FILE_APPEND);
+        return $file;
     }
 
     /**

@@ -18,9 +18,17 @@
 <div class="err">
     <?php if ($errorMassage !== null): ?>
         <p class="load">Во время загрузки возникли следующие ошибки (скачать лог ошибок).</p>
-        <?php foreach ($errorMassage as $massage): ?>
-            <p><?php echo $massage ?></p>
-        <?php endforeach; ?>
+
+        <?php
+            $path = __DIR__ . '/../logs/' . $errorMassage;
+            if (file_exists($path)) {
+                header('X-Accel-Redirect: ' . $path);
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename=' . basename($path));
+                exit;
+            }
+        ?>
+
     <?php else: ?>
         <p class="load">Загрузка успешно завершена.</p>
     <?php endif; ?>
