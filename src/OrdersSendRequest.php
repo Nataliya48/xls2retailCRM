@@ -164,6 +164,10 @@ class OrdersSendRequest
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'createdAt') {
                 //$this->addDateCreatedToOrder($keyFieldCrm, $fieldFile);
                 $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $fieldFile;
+            } elseif ($this->fieldsCrm[$keyFieldCrm] === 'orderType') {
+                $this->addOrderTypeToOrder($keyFieldCrm, $fieldFile);
+            } elseif ('orderMethod'){
+                $this->addOrderMethodToOrder($keyFieldCrm, $fieldFile);
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'null'){
                 continue;
             } else {
@@ -203,14 +207,14 @@ class OrdersSendRequest
     {
         if ($fieldExplode[1] === 'type'){
             foreach ($this->getListPaymentCode() as $code => $payment){
-                if ($payment === $fieldFile){
+                if ($payment === $fieldFile || $code === $fieldFile){
                     return $this->payment[$fieldExplode[1]] = $code;
                 }
             }
         }
         if ($fieldExplode[1] === 'status' && $this->payment['type'] !== null) {
             foreach ($this->getListPaymentStatus() as $code => $status){
-                if ($status === $fieldFile) {
+                if ($status === $fieldFile || $code === $fieldFile) {
                     return $this->payment[$fieldExplode[1]] = $code;
                 }
             }
@@ -227,7 +231,7 @@ class OrdersSendRequest
     private function addDeliveryTypeToOrder($fieldExplode, $fieldFile)
     {
         foreach ($this->getListDeliveryCode() as $code => $delivery) {
-            if ($delivery === $fieldFile) {
+            if ($delivery === $fieldFile || $code === $fieldFile) {
                 return $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $code];
             }
         }
@@ -243,7 +247,7 @@ class OrdersSendRequest
     private function addStatusToOrder($keyFieldCrm, $fieldFile)
     {
         foreach ($this->getListStatusCode() as $code => $status){
-            if ($status === $fieldFile){
+            if ($status === $fieldFile || $code === $fieldFile){
                 return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $code;
             }
         }
@@ -260,9 +264,41 @@ class OrdersSendRequest
     {
         if ($fieldExplode[1] === 'text'){
             foreach ($this->getListPaymentCode() as $code => $payment){
-                if ($payment === $fieldFile and $code != null){
+                if (($payment === $fieldFile || $code === $fieldFile) and $code != null){
                     return $this->payment['delivery'] = [$fieldExplode[1] => $code];
                 }
+            }
+        }
+    }
+
+    /**
+     * Добавление типа заказа в массив заказа
+     *
+     * @param $keyFieldCrm ключ поля CRM
+     * @param $fieldFile значение для записи
+     * @return mixed
+     */
+    private function addOrderTypeToOrder($keyFieldCrm, $fieldFile)
+    {
+        foreach ($this->getListOrderTypes() as $code => $type){
+            if ($type === $fieldFile || $code === $fieldFile){
+                return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $code;
+            }
+        }
+    }
+
+    /**
+     * Добавление способа оформления заказа в массив заказа
+     *
+     * @param $keyFieldCrm ключ поля CRM
+     * @param $fieldFile значение для записи
+     * @return mixed
+     */
+    private function addOrderMethodToOrder($keyFieldCrm, $fieldFile)
+    {
+        foreach ($this->getListOrderMethods() as $code => $method){
+            if ($method === $fieldFile || $code === $fieldFile){
+                return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $code;
             }
         }
     }
@@ -309,6 +345,52 @@ class OrdersSendRequest
         if (!$this->responce->isSuccessful()) {
             $this->writeLogError('ordersUpload', $this->responce);
         }
+    }
+
+    /**
+     * Получить список символьных кодов методов оформления заказов из CRM
+     *
+     * @return array
+     */
+    private function getListOrderMethods()
+    {
+        try {
+            $response = $this->connectionToCrm()->request->orderMethodsList();
+        } catch (\RetailCrm\Exception\CurlException $e) {
+            throw new Exception('Connection error: ' . $e->getMessage());
+        }
+        $statusCodeList = [];
+        if ($response->isSuccessful()) {
+            foreach ($response->orderMethods as $method){
+                $statusCodeList[$method['code']] = $method['name'];
+            }
+        } else {
+            $this->writeLogError('orderMethodsList', $response);
+        }
+        return $statusCodeList;
+    }
+
+    /**
+     * Получить список символьных кодов типов заказов из CRM
+     *
+     * @return array
+     */
+    private function getListOrderTypes()
+    {
+        try {
+            $response = $this->connectionToCrm()->request->orderTypesList();
+        } catch (\RetailCrm\Exception\CurlException $e) {
+            throw new Exception('Connection error: ' . $e->getMessage());
+        }
+        $statusCodeList = [];
+        if ($response->isSuccessful()) {
+            foreach ($response->orderTypes as $type){
+                $statusCodeList[$type['code']] = $type['name'];
+            }
+        } else {
+            $this->writeLogError('orderTypesList', $response);
+        }
+        return $statusCodeList;
     }
 
     /**
