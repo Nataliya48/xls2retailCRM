@@ -63,7 +63,7 @@ class ConnectCrm
      */
     public function listFields()
     {
-        $listFields = json_decode(file_get_contents(__DIR__ . '/retailcrm.json'), true)['orders'];
+        $listFields = json_decode(file_get_contents(__DIR__ . '/retailcrm.json'), true);
         return $listFields;
     }
 

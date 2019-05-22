@@ -8,6 +8,7 @@ use Export\LoadFile;
 use Export\ConnectCrm;
 use Export\OrdersSendRequest;
 use Export\CustomersSendRequest;
+use Export\Query;
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -29,12 +30,12 @@ try {
                 require_once("../src/template/templateSelectOption.php");
                 break;
             case "connect" :
-                require_once("../src/template/templateMapping.php");
                 $_SESSION['type'] = $_POST['type'];
                 $_SESSION['site'] = $_POST['site'];
+                require_once("../src/template/templateMapping.php");
                 break;
             case "mapping" :
-                $request = new OrdersSendRequest(
+                $request = new Query(
                     $_SESSION['url'],
                     $_SESSION['apiKey'],
                     $_SESSION['table'],
@@ -43,9 +44,6 @@ try {
                     $_SESSION['type'],
                     $_SESSION['site']
                 );
-                $assemblyOrder = $request->assemblyOrder();
-                $_SESSION['assemblyOrder'] = $assemblyOrder;
-                $_SESSION['errorMassage'] = $request->errorMassage();
                 require_once("../src/template/templateFinal.php");
                 break;
             default :

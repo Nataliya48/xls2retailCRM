@@ -1,7 +1,12 @@
-<?php session_start();?>
-<?php $listFieldsCrm = $_SESSION['listFieldsCrm'];?>
-<?php $fieldsFileLoad = $_SESSION['fieldsFileLoad'];?>
-<?php $customFields = $_SESSION['customFields'];?>
+<?php
+
+session_start();
+$type = $_SESSION['type'];
+$listFieldsCrm = $_SESSION['listFieldsCrm'][$type];
+$fieldsFileLoad = $_SESSION['fieldsFileLoad'];
+$customFields = $_SESSION['customFields'];
+
+?>
 
 <html>
 <head>
