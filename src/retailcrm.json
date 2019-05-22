@@ -43,6 +43,7 @@
     "payments.status": "Статус оплаты"
   },
   "customers": {
+    "null": "Не выбрано",
     "externalId": "Внешний ID клиента",
     "firstName": "Имя",
     "lastName": "Фамилия",

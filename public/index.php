@@ -6,8 +6,6 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Export\LoadFile;
 use Export\ConnectCrm;
-use Export\OrdersSendRequest;
-use Export\CustomersSendRequest;
 use Export\Query;
 
 try {

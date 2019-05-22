@@ -22,7 +22,7 @@
                 </td>
                 <td width="50%">
                     <select size="1" name="type">
-                        <option disabled>Что загружаем</option>
+                        <option selected disabled>Что загружаем</option>
                         <option value="orders">Заказы</option>
                         <option value="customers">Клиенты</option>
                     </select>
@@ -36,7 +36,7 @@
                 <td width="50%">
                     <?php if (!empty($sites)): ?>
                         <select size="1" name="site">
-                                <option disabled>Выберите магазин</option>
+                                <option selected disabled>Выберите магазин</option>
                                 <?php foreach ($sites as $code => $name): ?>
                                     <option value="<?= $code ?>"><?= $name ?></option>
                                 <?php endforeach; ?>

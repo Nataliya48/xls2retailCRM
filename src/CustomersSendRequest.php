@@ -81,13 +81,13 @@ class CustomersSendRequest
      * SendRequest constructor.
      * @param $url адрес CRM
      * @param $apiKey API ключ
-     * @param $table массив заказов
+     * @param $table массив клиентов
      * @param $fieldsCrm поля из CRM
      * @param $fieldsFile поля из загруженного файла
      * @param $type тип загружаемых данных
      * @param $site сайт CRM
      */
-    public function __construct($url, $apiKey, $table, $fieldsCrm, $fieldsFile, $type, $site)
+    public function __construct($url, $apiKey, $table, $fieldsCrm, $fieldsFile, $site)
     {
         $this->url = $url;
         $this->apiKey = $apiKey;
@@ -98,11 +98,9 @@ class CustomersSendRequest
         $this->site = $site;
         $this->essenceCrm = [];
 
-        if ($type === 'customers') {
-            $portions = array_chunk($this->assemblyOrder(), 50, true);
-            foreach ($portions as $portion) {
-                $this->createCustomers($portion);
-            }
+        $portions = array_chunk($this->assemblyCustomer(), 50, true);
+        foreach ($portions as $portion) {
+            $this->createCustomers($portion);
         }
     }
 
@@ -181,5 +179,66 @@ class CustomersSendRequest
     private function addContragentToCustomer($fieldExplode, $fieldFile)
     {
         return $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
+    }
+
+    /**
+     * Массовое создание пакета заказов
+     *
+     * @param $portion массив заказов
+     */
+    private function createCustomers($portion)
+    {
+        try {
+            $this->responce = $this->connectionToCrm()->request->customersUpload($portion, $this->site);
+            $this->writeLogAssemblyCustomer('customersUpload', $this->responce, $portion);
+        } catch (\RetailCrm\Exception\CurlException $e) {
+            throw new Exception('Connection error: ' . $e->getMessage());
+        }
+        if (!$this->responce->isSuccessful()) {
+            $this->writeLogError('customersUpload', $this->responce);
+        }
+    }
+
+    /**
+     * Запись в лог-файл ошибки API запроса
+     *
+     * @param $method API метод
+     * @param $response запрос
+     */
+    private function writeLogError($method, $response)
+    {
+        file_put_contents(realpath(__DIR__ . '/../logs/error.log'), json_encode([
+            'date' => date('Y-m-d H:i:s'),
+            'method' => $method,
+            'code' => $response->getStatusCode(),
+            'msg' => $response->getErrorMsg(),
+            'error' => isset($response['errors']) ? $response['errors'] : 'not errors'
+        ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), FILE_APPEND);
+    }
+
+    /**
+     * @param $response
+     * @return mixed
+     */
+    public function errorMassage()
+    {
+        return !empty($this->responce['errors']) ? $this->responce['errors'] : null;
+    }
+
+    /**
+     * Запись в лог-файл сформированный массив API запроса
+     *
+     * @param $method API метод
+     * @param $response запрос
+     * @param $customer массив клиента
+     */
+    private function writeLogAssemblyCustomer($method, $response, $customer)
+    {
+        file_put_contents(realpath(__DIR__ . '/../logs/assemblyCustomer.log'), json_encode([
+            'date' => date('Y-m-d H:i:s'),
+            'method' => $method,
+            'code' => $response->getStatusCode(),
+            'orders' => $customer
+        ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), FILE_APPEND);
     }
 }

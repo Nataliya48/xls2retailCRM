@@ -19,15 +19,21 @@ class Query
                     $table,
                     $fieldsCrm,
                     $fieldsFile,
-                    $type,
                     $site
                 );
                 $_SESSION['errorMassage'] = $request->errorMassage();
                 break;
             case 'customers':
+                $request = new CustomersSendRequest(
+                    $url,
+                    $apiKey,
+                    $table,
+                    $fieldsCrm,
+                    $fieldsFile,
+                    $site
+                );
+                $_SESSION['errorMassage'] = $request->errorMassage();
                 break;
         }
-
     }
-
 }

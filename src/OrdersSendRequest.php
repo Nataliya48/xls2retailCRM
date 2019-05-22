@@ -96,7 +96,7 @@ class OrdersSendRequest
      * @param $type тип загружаемых данных
      * @param $site сайт CRM
      */
-    public function __construct($url, $apiKey, $table, $fieldsCrm, $fieldsFile, $type, $site)
+    public function __construct($url, $apiKey, $table, $fieldsCrm, $fieldsFile, $site)
     {
         $this->url = $url;
         $this->apiKey = $apiKey;
@@ -107,11 +107,9 @@ class OrdersSendRequest
         $this->site = $site;
         $this->essenceCrm = [];
 
-        if ($type === 'orders') {
-            $portions = array_chunk($this->assemblyOrder(), 50, true);
-            foreach ($portions as $portion) {
-                $this->createOrders($portion);
-            }
+        $portions = array_chunk($this->assemblyOrder(), 50, true);
+        foreach ($portions as $portion) {
+            $this->createOrders($portion);
         }
     }
 
