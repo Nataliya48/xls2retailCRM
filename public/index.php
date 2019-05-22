@@ -2,8 +2,6 @@
 session_start();
 require_once '../vendor/autoload.php';
 
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Export\LoadFile;
 use Export\ConnectCrm;
 use Export\Query;

@@ -2,9 +2,6 @@
 
 namespace Export;
 
-use Export\OrdersSendRequest;
-use Export\CustomersSendRequest;
-
 class Query
 {
     public function __construct($url, $apiKey, $table, $fieldsCrm, $fieldsFile, $type, $site)
