@@ -163,17 +163,14 @@ class OrdersSendRequest
                 $this->addStatusToOrder($keyFieldCrm, $fieldFile);
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'createdAt') {
                 $this->addDateCreatedToOrder($keyFieldCrm, $fieldFile);
-                $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $fieldFile;
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'orderType') {
                 $this->addOrderTypeToOrder($keyFieldCrm, $fieldFile);
-            } elseif ('orderMethod'){
-                $this->addOrderMethodToOrder($keyFieldCrm, $fieldFile);
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'null'){
                 continue;
             } else {
                 $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $fieldFile;
             }
-            if ($this->payment['type'] !== null) {
+            if (isset($this->payment['type']) && $this->payment['type'] !== null) {
                 $this->essenceCrm['payments'] = [$this->payment];
             }
         }
@@ -312,18 +309,10 @@ class OrdersSendRequest
      */
     private function addDateCreatedToOrder($keyFieldCrm, $fieldFile)
     {
-        /*$fieldFile содержит массив
-        {
-            "date": "2018-09-13 00:00:00.000000",
-            "timezone_type": 3,
-            "timezone": "UTC"
-        }
-        Мне нужно использовать только элемент 'date'
-        Этот элемент типа DateTime, поэтому я преобразовываю значение к типу string
-        */
-
-        $fieldFile = (string)$fieldFile['date'];
-        if (preg_match("/\d{2}\.\d{2}\.\d{4}\s\d{2}:\d{2}:\d{2}/", $fieldFile)){ //01.02.2018 00:00:00
+        if (preg_match("/^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{6}$/", (string)$fieldFile->date)) {
+            $fieldFile = explode('.', $fieldFile)[0];
+            $date = Carbon::createFromFormat('Y-m-d H:i:s', $fieldFile);
+        } elseif (preg_match("/\d{2}\.\d{2}\.\d{4}\s\d{2}:\d{2}:\d{2}/", $fieldFile)){ //01.02.2018 00:00:00
             $date = Carbon::createFromFormat('d.m.Y H:i:s', $fieldFile);
         } elseif (preg_match("/^\d{2}\.\d{2}\.\d{4}$/", $fieldFile)){ //03.07.2018
             $date = Carbon::createFromFormat('d.m.Y', $fieldFile);
@@ -333,13 +322,11 @@ class OrdersSendRequest
             $date = Carbon::createFromFormat('Y-m-d', $fieldFile);
         } elseif (preg_match("/^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}$/", $fieldFile)) { //2018-03-11 00:00:00
             $date = Carbon::createFromFormat('Y-m-d H:i:s', $fieldFile);
-        } elseif (preg_match("/^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{6}$/", $fieldFile)){ //2018-03-11 00:00:00.00000000
-            $date = Carbon::createFromFormat('Y-m-d H:i:s', $fieldFile);
         } else {
             return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $fieldFile;
         }
-        $date->format('Y-m-d H:i:s');
-        return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $date['date'];
+        $data = $date->format('Y-m-d H:i:s');
+        return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $data;
     }
 
     /**

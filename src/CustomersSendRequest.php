@@ -2,6 +2,8 @@
 
 namespace Export;
 
+use Carbon\Carbon;
+
 class CustomersSendRequest
 {
     /**
@@ -132,13 +134,15 @@ class CustomersSendRequest
                 continue;
             }
             $keyFieldCrm = array_search($keyFieldFile, array_keys($this->fieldsCrm));
-            if (strpos($this->fieldsCrm[$keyFieldCrm], '.')){
+            if (strpos($this->fieldsCrm[$keyFieldCrm], '.')) {
                 $fieldExplode = explode('.', $this->fieldsCrm[$keyFieldCrm]);
                 if ($fieldExplode[0] === 'phones') {
                     $this->addPhonesToCustomer($fieldExplode, $fieldFile);
                 } else {
                     $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
                 }
+            } elseif ($this->fieldsCrm[$keyFieldCrm] === 'createdAt') {
+                $this->addDateCreatedToCustomer($keyFieldCrm, $fieldFile);
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'null'){
                 continue;
             } else {
@@ -160,6 +164,35 @@ class CustomersSendRequest
         if ($fieldExplode[1] === 'number'){
             return $this->essenceCrm[$fieldExplode[0]][] = ['number' => $fieldFile];
         }
+    }
+
+    /**
+     * Добавление даты создания клиента в массив клиента
+     *
+     * @param $keyFieldCrm ключ поля CRM
+     * @param $fieldFile значение для записи
+     * @return bool|\DateTime
+     */
+    private function addDateCreatedToCustomer($keyFieldCrm, $fieldFile)
+    {
+        if (preg_match("/^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{6}$/", (string)$fieldFile->date)) {
+            $fieldFile = explode('.', $fieldFile)[0];
+            $date = Carbon::createFromFormat('Y-m-d H:i:s', $fieldFile);
+        } elseif (preg_match("/\d{2}\.\d{2}\.\d{4}\s\d{2}:\d{2}:\d{2}/", $fieldFile)){ //01.02.2018 00:00:00
+            $date = Carbon::createFromFormat('d.m.Y H:i:s', $fieldFile);
+        } elseif (preg_match("/^\d{2}\.\d{2}\.\d{4}$/", $fieldFile)){ //03.07.2018
+            $date = Carbon::createFromFormat('d.m.Y', $fieldFile);
+        } elseif (preg_match("/^\d{2}\.\d{2}\.\d{2}\s\d{2}:\d{2}$/", $fieldFile)){ //06.01.18 00:00
+            $date = Carbon::createFromFormat('d.m.y H:i', $fieldFile);
+        } elseif (preg_match("/^\d{4}-\d{2}-\d{2}$/", $fieldFile)){ //2018-03-11
+            $date = Carbon::createFromFormat('Y-m-d', $fieldFile);
+        } elseif (preg_match("/^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}$/", $fieldFile)) { //2018-03-11 00:00:00
+            $date = Carbon::createFromFormat('Y-m-d H:i:s', $fieldFile);
+        } else {
+            return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $fieldFile;
+        }
+        $data = $date->format('Y-m-d H:i:s');
+        return $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $data;
     }
 
     /**

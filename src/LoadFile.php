@@ -76,8 +76,8 @@ class LoadFile
         foreach ($worksheet->getRowIterator() as $row) {
             $line = [];
             foreach ($row->getCellIterator() as $cell) {
-                if(\PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($cell)) {
-                    $line[] = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cell->getValue());
+                if(Date::isDateTime($cell)) {
+                    $line[] = Date::excelToDateTimeObject($cell->getValue());
                 } else {
                     $line[] = $cell->getValue();
                 }
