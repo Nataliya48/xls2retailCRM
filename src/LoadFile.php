@@ -4,6 +4,7 @@ namespace Export;
 
 use \PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use \PhpOffice\PhpSpreadsheet\Writer\Csv;
+use \PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class LoadFile
 {
@@ -75,10 +76,11 @@ class LoadFile
         foreach ($worksheet->getRowIterator() as $row) {
             $line = [];
             foreach ($row->getCellIterator() as $cell) {
-                $line[] = $cell->getValue();
-                /*if(PHPExcel_Shared_Date::isDateTime($cell)) {
-                    $line[] = date('Y-m-d H:i:s',PHPExcel_Shared_Date::ExcelToPHP($worksheet->getCellByColumnAndRow($row, $cell)->getValue()));
-                }*/
+                if(\PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($cell)) {
+                    $line[] = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cell->getValue());
+                } else {
+                    $line[] = $cell->getValue();
+                }
             }
             $table[] = $line;
         }
