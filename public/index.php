@@ -23,12 +23,12 @@ try {
                 $_SESSION['listFieldsCrm'] = $listFieldsCrm;
                 $_SESSION['fieldsFileLoad'] = $fieldsFileLoad;
                 $_SESSION['customFields'] = $customFields;
-                require_once("../src/template/templateSelectOption.php");
+                require_once("../src/template/selectOption.php");
                 break;
             case "connect" :
                 $_SESSION['type'] = $_POST['type'];
                 $_SESSION['site'] = $_POST['site'];
-                require_once("../src/template/templateMapping.php");
+                require_once("../src/template/mapping.php");
                 break;
             case "mapping" :
                 $request = new Query(
@@ -40,20 +40,20 @@ try {
                     $_SESSION['type'],
                     $_SESSION['site']
                 );
-                require_once("../src/template/templateFinal.php");
+                require_once("../src/template/result.php");
                 break;
             case "docs":
-                require_once("../src/template/templateDocumentation.php");
+                require_once("../src/template/documentation.php");
                 break;
             case "start":
-                require_once('../src/template/templateLoadFile.php');
+                require_once('../src/template/loadFile.php');
                 break;
             default :
-                require_once("../src/template/template404.php");
+                require_once("../src/template/notFound.php");
                 break;
         }
     } else {
-        require_once('../src/template/templateLoadFile.php');
+        require_once('../src/template/loadFile.php');
     }
 } catch (Exception $e) {
     $errorMsg = 'Выброшено исключение: ' . $e->getMessage() . "\n";

@@ -72,8 +72,6 @@ class OrdersSendRequest
     /**
      * Подключение к CRM
      *
-     * @param $urlCrm адрес CRM
-     * @param $apiKey ключ API
      * @return \RetailCrm\ApiClient
      */
     private function connectionToCrm()
@@ -88,13 +86,12 @@ class OrdersSendRequest
 
     /**
      * SendRequest constructor.
-     * @param $url адрес CRM
-     * @param $apiKey API ключ
-     * @param $table массив заказов
-     * @param $fieldsCrm поля из CRM
-     * @param $fieldsFile поля из загруженного файла
-     * @param $type тип загружаемых данных
-     * @param $site сайт CRM
+     * @param $url string адрес CRM
+     * @param $apiKey string API ключ
+     * @param $table array массив заказов
+     * @param $fieldsCrm array поля из CRM
+     * @param $fieldsFile array поля из загруженного файла
+     * @param $site string сайт CRM
      */
     public function __construct($url, $apiKey, $table, $fieldsCrm, $fieldsFile, $site)
     {
@@ -131,7 +128,7 @@ class OrdersSendRequest
     /**
      * Добавление значений в массив заказа
      *
-     * @param $order заказ
+     * @param $order array заказ
      * @return array
      */
     private function addValuesToFields($order)
@@ -165,6 +162,8 @@ class OrdersSendRequest
                 $this->addDateCreatedToOrder($keyFieldCrm, $fieldFile);
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'orderType') {
                 $this->addOrderTypeToOrder($keyFieldCrm, $fieldFile);
+            } elseif ($this->fieldsCrm[$keyFieldCrm] === 'orderMethod') {
+                $this->addOrderMethodToOrder($keyFieldCrm, $fieldFile);
             } elseif ($this->fieldsCrm[$keyFieldCrm] === 'null'){
                 continue;
             } else {
@@ -180,8 +179,8 @@ class OrdersSendRequest
     /**
      * Добавление товара в массив заказа
      *
-     * @param $fieldExplode поля CRM
-     * @param $fieldFile значение для записи
+     * @param $fieldExplode array поля CRM
+     * @param $fieldFile string значение для записи
      * @return array
      */
     private function addItemsToOrder($fieldExplode, $fieldFile)
@@ -196,8 +195,8 @@ class OrdersSendRequest
     /**
      * Добавление оплаты в массив заказа
      *
-     * @param $fieldExplode поля CRM
-     * @param $fieldFile значение для записи
+     * @param $fieldExplode array поля CRM
+     * @param $fieldFile string значение для записи
      * @return array
      */
     private function addPaymentToOrder($fieldExplode, $fieldFile)
@@ -221,8 +220,8 @@ class OrdersSendRequest
     /**
      * Добавление доставки в массив заказа
      *
-     * @param $fieldExplode поля CRM
-     * @param $fieldFile значение для записи
+     * @param $fieldExplode array поля CRM
+     * @param $fieldFile string значение для записи
      * @return int|string
      */
     private function addDeliveryTypeToOrder($fieldExplode, $fieldFile)
@@ -237,8 +236,8 @@ class OrdersSendRequest
     /**
      * Добавление статуса в массив заказа
      *
-     * @param $keyFieldCrm ключ поля CRM
-     * @param $fieldFile значение для записи
+     * @param $keyFieldCrm string ключ поля CRM
+     * @param $fieldFile string значение для записи
      * @return mixed
      */
     private function addStatusToOrder($keyFieldCrm, $fieldFile)
@@ -253,8 +252,8 @@ class OrdersSendRequest
     /**
      * Добавление адреса доставки в массив заказа
      *
-     * @param $fieldExplode поля CRM
-     * @param $fieldFile значение для записи
+     * @param $fieldExplode array поля CRM
+     * @param $fieldFile string значение для записи
      * @return array
      */
     private function addAddressDeliveryToOrder($fieldExplode, $fieldFile)
@@ -271,8 +270,8 @@ class OrdersSendRequest
     /**
      * Добавление типа заказа в массив заказа
      *
-     * @param $keyFieldCrm ключ поля CRM
-     * @param $fieldFile значение для записи
+     * @param $keyFieldCrm string ключ поля CRM
+     * @param $fieldFile string значение для записи
      * @return mixed
      */
     private function addOrderTypeToOrder($keyFieldCrm, $fieldFile)
@@ -287,8 +286,8 @@ class OrdersSendRequest
     /**
      * Добавление способа оформления заказа в массив заказа
      *
-     * @param $keyFieldCrm ключ поля CRM
-     * @param $fieldFile значение для записи
+     * @param $keyFieldCrm string ключ поля CRM
+     * @param $fieldFile string значение для записи
      * @return mixed
      */
     private function addOrderMethodToOrder($keyFieldCrm, $fieldFile)
@@ -303,8 +302,8 @@ class OrdersSendRequest
     /**
      * Добавление даты создания заказа в массив заказа
      *
-     * @param $keyFieldCrm ключ поля CRM
-     * @param $fieldFile значение для записи
+     * @param $keyFieldCrm string|\DateTime ключ поля CRM
+     * @param $fieldFile string значение для записи
      * @return bool|\DateTime
      */
     private function addDateCreatedToOrder($keyFieldCrm, $fieldFile)
@@ -332,7 +331,7 @@ class OrdersSendRequest
     /**
      * Массовое создание пакета заказов
      *
-     * @param $portion массив заказов
+     * @param $portion array массив заказов
      */
     private function createOrders($portion)
     {
@@ -488,8 +487,8 @@ class OrdersSendRequest
     /**
      * Запись в лог-файл ошибки API запроса
      *
-     * @param $method API метод
-     * @param $response запрос
+     * @param $method string API метод
+     * @param $response \RetailCrm\ApiClient запрос
      */
     private function writeLogError($method, $response)
     {
@@ -515,9 +514,9 @@ class OrdersSendRequest
     /**
      * Запись в лог-файл сформированный массив API запроса
      *
-     * @param $method API метод
-     * @param $response запрос
-     * @param $order массив заказа
+     * @param $method string API метод
+     * @param $response \RetailCrm\ApiClient запрос
+     * @param $order array массив заказа
      */
     private function writeLogAssemblyOrder($method, $response, $order)
     {

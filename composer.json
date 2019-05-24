@@ -1,14 +1,13 @@
 {
     "require": {
         "retailcrm/api-client-php": "~5.0",
-        "vlucas/phpdotenv": "^3.3",
         "phpoffice/phpspreadsheet": "^1.6",
         "nesbot/carbon": "^2.18"
     },
 
     "autoload": {
         "psr-4": {
-            "Export\\": "src/"
+            "Export\\": "src/Classes/"
         }
     }
 }

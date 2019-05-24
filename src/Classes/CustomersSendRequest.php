@@ -65,8 +65,6 @@ class CustomersSendRequest
     /**
      * Подключение к CRM
      *
-     * @param $urlCrm адрес CRM
-     * @param $apiKey ключ API
      * @return \RetailCrm\ApiClient
      */
     private function connectionToCrm()
@@ -81,13 +79,12 @@ class CustomersSendRequest
 
     /**
      * SendRequest constructor.
-     * @param $url адрес CRM
-     * @param $apiKey API ключ
-     * @param $table массив клиентов
-     * @param $fieldsCrm поля из CRM
-     * @param $fieldsFile поля из загруженного файла
-     * @param $type тип загружаемых данных
-     * @param $site сайт CRM
+     * @param $url string адрес CRM
+     * @param $apiKey string API ключ
+     * @param $table array массив клиентов
+     * @param $fieldsCrm array поля из CRM
+     * @param $fieldsFile array поля из загруженного файла
+     * @param $site string сайт CRM
      */
     public function __construct($url, $apiKey, $table, $fieldsCrm, $fieldsFile, $site)
     {
@@ -124,7 +121,7 @@ class CustomersSendRequest
     /**
      * Добавление значений в массив клиента
      *
-     * @param $customer клиент
+     * @param $customer array клиент
      * @return array
      */
     private function addValuesToFields($customer)
@@ -155,8 +152,8 @@ class CustomersSendRequest
     /**
      * Добавление телефона в массив клиента
      *
-     * @param $fieldExplode поля CRM
-     * @param $fieldFile значение для записи
+     * @param $fieldExplode array поля CRM
+     * @param $fieldFile string значение для записи
      * @return array
      */
     private function addPhonesToCustomer($fieldExplode, $fieldFile)
@@ -169,8 +166,8 @@ class CustomersSendRequest
     /**
      * Добавление даты создания клиента в массив клиента
      *
-     * @param $keyFieldCrm ключ поля CRM
-     * @param $fieldFile значение для записи
+     * @param $keyFieldCrm string ключ поля CRM
+     * @param $fieldFile string значение для записи
      * @return bool|\DateTime
      */
     private function addDateCreatedToCustomer($keyFieldCrm, $fieldFile)
@@ -198,7 +195,7 @@ class CustomersSendRequest
     /**
      * Массовое создание пакета заказов
      *
-     * @param $portion массив заказов
+     * @param $portion array массив заказов
      */
     private function createCustomers($portion)
     {
@@ -216,8 +213,8 @@ class CustomersSendRequest
     /**
      * Запись в лог-файл ошибки API запроса
      *
-     * @param $method API метод
-     * @param $response запрос
+     * @param $method string API метод
+     * @param $response \RetailCrm\ApiClient запрос
      */
     private function writeLogError($method, $response)
     {
@@ -243,9 +240,9 @@ class CustomersSendRequest
     /**
      * Запись в лог-файл сформированный массив API запроса
      *
-     * @param $method API метод
-     * @param $response запрос
-     * @param $customer массив клиента
+     * @param $method string API метод
+     * @param $response \RetailCrm\ApiClient запрос
+     * @param $customer array массив клиента
      */
     private function writeLogAssemblyCustomer($method, $response, $customer)
     {

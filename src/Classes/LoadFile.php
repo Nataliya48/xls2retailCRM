@@ -2,8 +2,7 @@
 
 namespace Export;
 
-use \PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use \PhpOffice\PhpSpreadsheet\Writer\Csv;
+use \PhpOffice\PhpSpreadsheet\IOFactory;
 use \PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class LoadFile
@@ -41,21 +40,20 @@ class LoadFile
      *
      * @return string
      */
-    private function getExtension($file): string
+    private function getExtension(): string
     {
-        $file = explode('.', $file);
+        $file = explode('.', $this->tmpFile['name']);
         return array_pop($file);
     }
 
     /**
      * Открывает файл с расширением *.csv
      *
-     * @param $file загружаемый файл
      * @return array таблица данных
      */
-    private function csvToArr($file): array
+    private function csvToArr(): array
     {
-        $table = explode(PHP_EOL, trim(file_get_contents($file)));
+        $table = explode(PHP_EOL, trim(file_get_contents($this->localFile)));
         $table = array_map(function ($value) {
             return explode(',', $value);
         }, $table);
@@ -65,12 +63,13 @@ class LoadFile
     /**
      * Открывает файл с расширением *.xls(x)
      *
-     * @param $file загружаемый файл
      * @return array таблица данных
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
-    private function xlsToArr($file): array
+    private function xlsToArr(): array
     {
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
+        $spreadsheet = IOFactory::load($this->localFile);
         $worksheet = $spreadsheet->getActiveSheet();
         $table = [];
         foreach ($worksheet->getRowIterator() as $row) {
@@ -88,24 +87,8 @@ class LoadFile
     }
 
     /**
-     * Подключение к CRM
-     *
-     * @param $urlCrm адрес CRM
-     * @param $apiKey ключ API
-     * @return \RetailCrm\ApiClient
-     */
-    private function connectionToCrm($urlCrm, $apiKey)
-    {
-        $client = new \RetailCrm\ApiClient(
-            $urlCrm,
-            $apiKey,
-            \RetailCrm\ApiClient::V5
-        );
-        return $client;
-    }
-
-    /**
      * Export constructor.
+     * @param $file array загружаемый файл
      * @throws \Exception ошибки загрузки файла
      */
     public function __construct($file)
@@ -123,7 +106,7 @@ class LoadFile
             throw new \Exception('Incorrect encoding. Use UTF-8');
         }
 
-        $this->extension = $this->getExtension($this->tmpFile['name']);
+        $this->extension = $this->getExtension();
         $this->path = realpath(__DIR__ . '/../storage/');
 
         if (!file_exists($this->path)) {
@@ -145,11 +128,11 @@ class LoadFile
             case 'xls':
             case 'xlsx':
                 move_uploaded_file($this->tmpFile['tmp_name'], $this->localFile);
-                return $this->xlsToArr($this->localFile);
+                return $this->xlsToArr();
                 break;
             case 'csv':
                 move_uploaded_file($this->tmpFile['tmp_name'], $this->localFile);
-                return $this->csvToArr($this->localFile);
+                return $this->csvToArr();
                 break;
             default:
                 throw new \Exception('Incorrect format. Use *.csv or *.xls(x)');
@@ -159,9 +142,10 @@ class LoadFile
     /**
      * Возвращает названия полей из файла
      *
-     * @return mixed
+     * @return array
+     * @throws \Exception
      */
-    public function getNamesFields()
+    public function getNamesFields(): array
     {
         return $this->getFileContents()[0];
     }

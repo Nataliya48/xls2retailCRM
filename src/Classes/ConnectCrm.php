@@ -6,12 +6,12 @@ class ConnectCrm
 {
     /**
      * адрес retailCRM
-     * @var
+     * @var string
      */
     private $url;
     /**
      * API ключ
-     * @var
+     * @var string
      */
     private $apiKey;
 
@@ -32,8 +32,8 @@ class ConnectCrm
 
     /**
      * ConnectCrm constructor.
-     * @param $url адрес CRM
-     * @param $apiKey ключ API
+     * @param $url string адрес CRM
+     * @param $apiKey string ключ API
      */
     public function __construct($url, $apiKey)
     {
@@ -59,9 +59,9 @@ class ConnectCrm
     /**
      * Получаем список полей CRM
      *
-     * @return mixed
+     * @return array
      */
-    public function listFields()
+    public function listFields(): array
     {
         $listFields = json_decode(file_get_contents(__DIR__ . '/retailcrm.json'), true);
         return $listFields;
