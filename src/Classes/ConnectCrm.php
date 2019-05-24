@@ -59,11 +59,11 @@ class ConnectCrm
     /**
      * Получаем список полей CRM
      *
-     * @return array
+     * @return mixed
      */
-    public function listFields(): array
+    public function listFields()
     {
-        $listFields = json_decode(file_get_contents(__DIR__ . '/retailcrm.json'), true);
+        $listFields = json_decode(file_get_contents(realpath(__DIR__ . '/../retailcrm.json')), true);
         return $listFields;
     }
 

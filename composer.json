@@ -2,7 +2,8 @@
     "require": {
         "retailcrm/api-client-php": "~5.0",
         "phpoffice/phpspreadsheet": "^1.6",
-        "nesbot/carbon": "^2.18"
+        "nesbot/carbon": "^2.18",
+        "psr/log": "^1.1"
     },
 
     "autoload": {

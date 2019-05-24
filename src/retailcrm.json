@@ -28,7 +28,7 @@
     "orderType": "Тип заказа",
     "orderMethod": "Способ оформления",
     "customer.externalId": "Внешний ID клиента",
-    "managerId": "ID менеджера",
+    "managerId": "Менеджер (ID)",
     "status": "Статус заказа",
     "items.externalId": "Идентификатор товара",
     "items.productName": "Название товара",
