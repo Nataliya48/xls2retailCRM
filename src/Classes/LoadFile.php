@@ -111,7 +111,7 @@ class LoadFile
         }
 
         $this->extension = $this->getExtension();
-        $this->path = realpath(__DIR__ . '/../storage/');
+        $this->path = realpath(__DIR__ . '/../../storage/');
 
         if (!file_exists($this->path)) {
             mkdir($this->path, 0777, true);
