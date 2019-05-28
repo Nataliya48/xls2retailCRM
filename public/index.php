@@ -57,6 +57,10 @@ try {
     }
 } catch (Exception $e) {
     $errorMsg = 'Выброшено исключение: ' . $e->getMessage() . "\n";
+    file_put_contents(realpath(__DIR__ . '/../logs/throws.log'), json_encode([
+        'date' => date('Y-m-d H:i:s'),
+        'exception' => $errorMsg
+    ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), FILE_APPEND);
     //сделать шаблон для вывода ошибки
     //следать лог для записи исключений
 }

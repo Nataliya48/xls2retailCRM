@@ -1,12 +1,17 @@
 <?php
 
-use Export;
+namespace Export;
+
 use Psr\Log\LoggerInterface;
 
 class Logger
 {
     private $logger;
 
+    /**
+     * Logger constructor.
+     * @param LoggerInterface|null $logger
+     */
     public function __construct(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
