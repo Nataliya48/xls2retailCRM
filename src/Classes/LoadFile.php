@@ -3,6 +3,7 @@
 namespace Export;
 
 use \PhpOffice\PhpSpreadsheet\IOFactory;
+use \PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class LoadFile
 {
@@ -75,7 +76,7 @@ class LoadFile
             $line = [];
             foreach ($row->getCellIterator() as $cell) {
                 try {
-                    $s = \PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($cell);
+                    $s = Date::isDateTime($cell);
                 } catch (\Exception $e) {
                     $asd = 5;
                 }
