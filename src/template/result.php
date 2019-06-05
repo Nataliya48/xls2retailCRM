@@ -31,6 +31,10 @@
     </form>
 </div>
 
+<form method="post" class="formMapp" action="index.php?action=connect">
+    <p><input type="submit" value="Назад"></p>
+</form>
+
 <?php
 if (isset($errorMsg)):
     echo $errorMsg;

@@ -51,6 +51,10 @@
         <p><input type="submit" value="Отправить"></p>
     </form>
 
+    <form method="post" class="formMapp" action="index.php?action=start">
+        <p><input type="submit" value="Назад"></p>
+    </form>
+
 <?php
 if (isset($errorMsg)):
     echo $errorMsg;
