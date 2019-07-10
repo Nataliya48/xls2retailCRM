@@ -75,11 +75,6 @@ class LoadFile
         foreach ($worksheet->getRowIterator() as $row) {
             $line = [];
             foreach ($row->getCellIterator() as $cell) {
-                try {
-                    $s = Date::isDateTime($cell);
-                } catch (\Exception $e) {
-                    $asd = 5;
-                }
                 if(Date::isDateTime($cell)) {
                     $line[] = Date::excelToDateTimeObject($cell->getValue());
                 } else {

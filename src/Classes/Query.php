@@ -41,6 +41,17 @@ class Query
                 );
                 $_SESSION['errorMassage'] = $request->errorMsgForPrint();
                 break;
+            case 'inventories':
+                $request = new InventoriesSendRequest(
+                    $url,
+                    $apiKey,
+                    $table,
+                    $fieldsCrm,
+                    $fieldsFile,
+                    $site
+                );
+                $_SESSION['errorMassage'] = $request->errorMsgForPrint();
+                break;
         }
     }
 }

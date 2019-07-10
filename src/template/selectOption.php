@@ -25,6 +25,7 @@
                         <option selected disabled>Что загружаем</option>
                         <option value="orders">Заказы</option>
                         <option value="customers">Клиенты</option>
+                        <option value="inventories">Остатки</option>
                     </select>
                 </td>
 

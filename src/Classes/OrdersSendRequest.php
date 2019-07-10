@@ -63,6 +63,13 @@ class OrdersSendRequest
     private $payment;
 
     /**
+     * Массив товаров
+     *
+     * @var array
+     */
+    private $items;
+
+    /**
      * Запрос для отправки заказов в CRM
      *
      * @var array
@@ -120,6 +127,7 @@ class OrdersSendRequest
         foreach ($this->table as $order){
             unset($this->essenceCrm);
             unset($this->payment);
+            unset($this->items);
             $assemblyOrderCrm[] = $this->addValuesToFields($order);
         }
         return $assemblyOrderCrm;
@@ -152,6 +160,7 @@ class OrdersSendRequest
                         break;
                     case "address":
                         $this->addAddressDeliveryToOrder($fieldExplode, $fieldFile);
+                        break;
                     default:
                         $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
                         break;
@@ -171,6 +180,8 @@ class OrdersSendRequest
             }
             if (isset($this->payment['type']) && $this->payment['type'] !== null) {
                 $this->essenceCrm['payments'] = [$this->payment];
+            } if (isset($this->items['productName']) && $this->items['productName'] !== null) {
+                $this->essenceCrm['items'] = [$this->items];
             }
         }
         return $this->essenceCrm;
@@ -186,10 +197,28 @@ class OrdersSendRequest
     private function addItemsToOrder($fieldExplode, $fieldFile)
     {
         if ($fieldExplode[1] === 'externalId'){
+            return $this->items[$fieldExplode[0]][] = ['offer' => [$fieldExplode[1] => $fieldFile]];
+        } elseif ($fieldExplode[1] === 'productName') {
+            return $this->items[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
+        } elseif ($fieldExplode[1] === 'initialPrice' && $this->items['productName'] !== null) {
+            return $this->items[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
+        } elseif ($fieldExplode[1] === 'quantity' && $this->items['productName'] !== null) {
+            return $this->items[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
+        } elseif ($fieldExplode[1] === 'discountTotal' && $this->items['productName'] !== null) {
+            return $this->items[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
+        }
+
+        /*if ($fieldExplode[1] === 'externalId'){
             return $this->essenceCrm[$fieldExplode[0]][] = ['offer' => [$fieldExplode[1] => $fieldFile]];
         } elseif ($fieldExplode[1] === 'productName') {
+            return $this->essenceCrm[$fieldExplode[0]] = [$fieldExplode[1] => $fieldFile];
+        } elseif ($fieldExplode[1] === 'initialPrice') {
             return $this->essenceCrm[$fieldExplode[0]][] = [$fieldExplode[1] => $fieldFile];
-        }
+        } elseif ($fieldExplode[1] === 'quantity') {
+            return $this->essenceCrm[$fieldExplode[0]][] = [$fieldExplode[1] => $fieldFile];
+        } elseif ($fieldExplode[1] === 'discountTotal') {
+            return $this->essenceCrm[$fieldExplode[0]][] = [$fieldExplode[1] => $fieldFile];
+        }*/
     }
 
     /**
