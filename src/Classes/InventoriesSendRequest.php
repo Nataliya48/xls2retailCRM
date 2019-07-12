@@ -146,6 +146,9 @@ class InventoriesSendRequest
             } else {
                 $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $fieldFile;
             }
+            if (!empty($this->inventories) /*&& $this->inventories !== null*/) {
+                $this->essenceCrm[] = $this->inventories;
+            }
         }
         return $this->essenceCrm;
     }
@@ -159,11 +162,11 @@ class InventoriesSendRequest
     private function addCodeStoreToInventories($fieldExplode, $fieldFile)
     {
         if ($fieldExplode[1] === 'code'){
-            $this->inventories[$fieldExplode[0]][] = [$fieldExplode[1] => $fieldFile];
+            $this->inventories[$fieldExplode[1]] = $fieldFile;
         } elseif ($fieldExplode[1] === 'available' && $this->inventories['code'] !== null) {
-            $this->inventories[$fieldExplode[0]] = [[$fieldExplode[1] => $fieldFile]];
+            $this->inventories[$fieldExplode[1]] = $fieldFile;
         } elseif ($fieldExplode[1] === 'purchasePrice' && $this->inventories['code'] !== null) {
-            $this->inventories[$fieldExplode[0]] = [[$fieldExplode[1] => $fieldFile]];
+            $this->inventories[$fieldExplode[1]] = $fieldFile;
         }
     }
 
