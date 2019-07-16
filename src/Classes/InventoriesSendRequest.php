@@ -146,9 +146,9 @@ class InventoriesSendRequest
             } else {
                 $this->essenceCrm[$this->fieldsCrm[$keyFieldCrm]] = $fieldFile;
             }
-            if (!empty($this->inventories) /*&& $this->inventories !== null*/) {
-                $this->essenceCrm[] = $this->inventories;
-            }
+        }
+        if (!empty($this->inventories) /*&& $this->inventories !== null*/) {
+            $this->essenceCrm['stores'] = [$this->inventories];
         }
         return $this->essenceCrm;
     }
