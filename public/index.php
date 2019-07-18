@@ -61,6 +61,7 @@ try {
         'date' => date('Y-m-d H:i:s'),
         'exception' => $errorMsg
     ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), FILE_APPEND);
+    //require_once();
     //сделать шаблон для вывода ошибки
     //следать лог для записи исключений
 }
